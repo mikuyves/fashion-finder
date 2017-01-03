@@ -23,8 +23,8 @@ class SaveItemPineline(object):
     *.png: screenshot of the item url(modified as no discount)
     '''
     def process_item(self, item, spider):
-        brand = item['brand'].upper()
-        title = '.'.join(item['title'].title().split(' '))
+        brand = item['brand']
+        title = '.'.join(item['title'].split(' '))
         foldername = '%s_%s' % (brand, title)
         filename_base = '%s_%s' % (brand, title)
         folderpath = os.path.join(BASEPATH, foldername)

@@ -9,6 +9,14 @@
 #     http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
 #     http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
 
+import sys
+import os
+from os.path import dirname
+# Set the directory for using the modules in the same project such as filickr.
+path = dirname(dirname(os.path.abspath(os.path.dirname(__file__))))
+sys.path.append(path)
+import flickr
+
 BOT_NAME = 'eshop'
 
 SPIDER_MODULES = ['eshop.spiders']

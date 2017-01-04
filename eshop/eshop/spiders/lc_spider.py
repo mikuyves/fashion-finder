@@ -6,20 +6,26 @@ from eshop.items import Product, ProductLoader
 
 lc_url = raw_input('Enter the URL: ')
 
+
 class LcSpider(scrapy.Spider):
     name = 'lc'
     start_urls = [
         lc_url,
     ]
 
+    product_rules = {
+        'brand': '.lc-product-brand-refresh::text',
+        'title': '.lc-product-short-description-refresh::text',
+        'desc': '.text-paragraph::text',
+        'details': '.sizeAndFit li::text',
+        'photo_urls': '.hero-carousel__img::attr(data-xl)',
+    }
+
     def parse(self, response):
         pldr = ProductLoader(item=Product(), response=response)
         pldr.add_value('url', response.url)
-        pldr.add_css('brand', '.lc-product-brand-refresh::text')
-        pldr.add_css('title', '.lc-product-short-description-refresh::text')
-        pldr.add_css('desc', '.text-paragraph::text')
-        pldr.add_css('details', '.sizeAndFit li::text')
-        pldr.add_css('photo_urls', '.hero-carousel__img::attr(data-xl)')
+        for field, css in self.product_rules.items():
+            pldr.add_css(field, css)
 
         yield scrapy.Request(
             url=self.get_cn_url(response.url),
@@ -35,20 +41,28 @@ class LcSpider(scrapy.Spider):
         # So, we can only pass `item` here, and instantiate a pldr to change
         # the response correctly.
         pldr = ProductLoader(item=response.meta['item'], response=response)
+
         if response.status ==200:
             pldr.add_value('has_cn', True)
-            pldr.add_css('title_cn', '.lc-product-short-description-refresh::text')
-            pldr.add_css('desc_cn', '.text-paragraph::text')
-            pldr.add_css('details_cn', '.sizeAndFit li::text')
-            return pldr.load_item()
         else:
-            # It could be no Chinese version.
             pldr.add_value('has_cn', False)
-            pldr.add_value('title_cn', '')
-            pldr.add_value('desc_cn', '')
-            pldr.add_value('details_cn', '')
-            self.log('No Chinese version.')
-            return pldr.load_item()
+
+        field_cn = ('title', 'desc', 'details')
+        for field, css in self.product_rules.items():
+            if field in field_cn:
+
+                if pldr.get_value('has_cn'):
+                    pldr.add_css(field + '_cn', css)
+                else:
+                    pldr.add_css(field + '_cn', '')
+
+        return pldr.load_item()
 
     def get_cn_url(self, url):
         return url.replace('.com', '.com.cn')
+
+    def parse_other_color(self, response):
+        # Some pages has more than one color so that we should make another request.
+        # TODO: But in lanecrawford.com, other colors are applied by JSON. Make a
+        # way to deal with JSON.
+        pass

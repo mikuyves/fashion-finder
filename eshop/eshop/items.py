@@ -15,14 +15,16 @@ class Product(scrapy.Item):
 
     brand = scrapy.Field()
     title = scrapy.Field()
-    title_ch = scrapy.Field()
     desc = scrapy.Field()
-    desc_ch = scrapy.Field()
     details = scrapy.Field()
-    details_ch = scrapy.Field()
 
     photo_urls = scrapy.Field()
     sreenshot_filename = scrapy.Field()
+
+    has_cn = scrapy.Field()
+    title_cn = scrapy.Field()
+    desc_cn = scrapy.Field()
+    details_cn = scrapy.Field()
 
     last_update = scrapy.Field()
 
@@ -31,14 +33,11 @@ class ProductLoader(ItemLoader):
     default_output_processor = TakeFirst()
 
     brand_in = MapCompose(unicode.strip, unicode.upper)
-
     title_in = MapCompose(unicode.strip, unicode.title)
-    title_ch_in = MapCompose(unicode.strip, unicode.title)
-
     desc_in = MapCompose(unicode.strip)
-    desc_ch_in = MapCompose(unicode.strip)
-
     details_out = Identity()
-    details_ch_out = Identity()
-
     photo_urls_out = Identity()
+
+    title_cn_in = MapCompose(unicode.strip)
+    desc_cn_in = MapCompose(unicode.strip)
+    details_cn_out = Identity()

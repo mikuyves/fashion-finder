@@ -18,7 +18,7 @@ class SaveItemPineline(object):
     '''
     Make a folder to save all the item data, as follow:
     foldername: brand - title
-    info.txt: title_ch, desc_ch, details_ch, title, desc, details, url
+    info.txt: title_cn, desc_cn, details_cn, title, desc, details, url
     *.jpg: photos
     *.png: screenshot of the item url(modified as no discount)
     '''
@@ -36,12 +36,16 @@ class SaveItemPineline(object):
 
         # Save the information to a txt file.
         with open(folderpath + '/%s.txt' % filename_base, 'w') as f:
-            f.write(item['title_ch'].encode('utf8'))
-            f.write('\n\n')
-            f.write(item['desc_ch'].encode('utf8'))
-            f.write('\n\n')
-            f.write('\n'.join(item['details_ch']).encode('utf8'))
-            f.write('\n\n')
+            # Write Chinese content.
+            if item['has_cn']:
+                f.write(item['title_cn'].encode('utf8'))
+                f.write('\n\n')
+                f.write(item['desc_cn'].encode('utf8'))
+                f.write('\n\n')
+                f.write('\n'.join(item['details_cn']).encode('utf8'))
+                f.write('\n\n')
+
+            # Write standard content in English.
             f.write(item['title'].encode('utf8'))
             f.write('\n\n')
             f.write(item['desc'].encode('utf8'))
@@ -50,8 +54,8 @@ class SaveItemPineline(object):
             f.write('\n\n')
             f.write(item['url'].encode('utf8'))
 
-        # Save photos.
-        # TODO: Isrequests better than ImagesPineline or scrapy.Request?
+        # Download photos.
+        # TODO: Is requests better than ImagesPineline or `scrapy.Request`?
         for num, photo_url in enumerate(item['photo_urls'], start=1):
             photo = requests.get(photo_url)
             filename = '%s_%d.jpg' % (filename_base, num)

@@ -87,10 +87,12 @@ DOWNLOADER_MIDDLEWARES = {
 
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
-#ITEM_PIPELINES = {
-#    'eshop.pipelines.ScreenshotPineline': 300,
-#    'eshop.pipelines.SaveItemPineline': 400,
-#}
+ITEM_PIPELINES = {
+    'eshop.pipelines.CheckItemPipeline': 200,
+    'eshop.pipelines.JsonWriterPipeline': 201,
+#    'eshop.pipelines.ScreenshotPipeline': 300,
+#    'eshop.pipelines.SaveItemPipeline': 400,
+}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See http://doc.scrapy.org/en/latest/topics/autothrottle.html

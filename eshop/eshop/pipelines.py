@@ -5,18 +5,47 @@
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
 import os
+import json
+
 import scrapy
+from scrapy.exceptions import DropItem
 import requests
 import hashlib
 from urllib import quote
 
 from utils.screenshot import get_screenshot
 from utils.secret import BASEPATH
+from eshop.utils import dealtext
+from eshop.utils.dealitem import ItemMixer
 
 
-class SaveItemPineline(object):
-    '''
-    Make a folder to save all the item data, as follow:
+class CheckItemPipeline(object):
+    '''Check whether an item found in Chinese website has been translated.'''
+    def process_item(self, item, spider):
+        if item['lang'] == 'zh-CN' and not dealtext.match_zh(item['title']):
+            raise DropItem('No Chinese translation yet: %s', item)
+        else:
+            return item
+
+
+class JsonWriterPipeline(object):
+
+    def open_spider(self, spider):
+        self.file = open('items.jl', 'wb')
+
+    def close_spider(self, spider):
+        self.file.close()
+        mixer = ItemMixer('items.jl')
+        mixer.save_items()
+
+    def process_item(self, item, spider):
+        line = json.dumps(dict(item)) + '\n'
+        self.file.write(line)
+        return item
+
+
+class SaveItemPipeline(object):
+    ''' Make a folder to save all the item data, as follow:
     foldername: brand - title
     info.txt: title_cn, desc_cn, details_cn, title, desc, details, url
     *.jpg: photos
@@ -55,7 +84,7 @@ class SaveItemPineline(object):
             f.write(item['url'].encode('utf8'))
 
         # Download photos.
-        # TODO: Is requests better than ImagesPineline or `scrapy.Request`?
+        # TODO: Is requests better than ImagesPipeline or `scrapy.Request`?
         for num, photo_url in enumerate(item['photo_urls'], start=1):
             photo = requests.get(photo_url)
             filename = '%s_%d.jpg' % (filename_base, num)
@@ -68,7 +97,7 @@ class SaveItemPineline(object):
 
         return item
 
-#class ScreenshotPineline(object):
+#class ScreenshotPipeline(object):
 #    '''Pipeline that uses Splash to render screenshot of
 #    every Scrapy item.'''
 #

@@ -24,7 +24,6 @@ class Product(scrapy.Item):
     detail = scrapy.Field()
 
     photo_urls = scrapy.Field()
-    sreenshot_filename = scrapy.Field()
 
     last_update = scrapy.Field()
 

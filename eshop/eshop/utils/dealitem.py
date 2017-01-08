@@ -34,6 +34,7 @@ class ItemMixer(object):
         return loaded_items
 
     def mix_items(self):
+        # Combine 2 language items into 1.
         items = []
         for group in self.groups.itervalues():
             if len(group) > 1:
@@ -86,7 +87,6 @@ class ItemMixer(object):
             f.write(item['url'].encode('utf8'))
 
         # Download photos.
-        # TODO: Is requests better than ImagesPipeline or `scrapy.Request`?
         for num, photo_url in enumerate(item['photo_urls'], start=1):
             photo = requests.get(photo_url)
             filename = '%s_%d.jpg' % (filename_base, num)

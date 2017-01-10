@@ -68,3 +68,11 @@ def get_photoset_id(brand):
 
 # Add the recently uploaded photos to the photoset of brand.
 # flickr.photosets.addPhoto(photoset_id='brand_photoset_id', photo_id='per_new_picture_id')
+
+# Find out which folders need to upload.
+def get_upload_folders():
+    upload_folders = []
+    for root, sub, files in os.walk(secret.BASEPATH):
+        if 'ready_to_upload.txt' in files:
+            upload_folders.append(root)
+    return upload_folders

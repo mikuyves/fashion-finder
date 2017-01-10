@@ -4,6 +4,7 @@ import json
 from collections import defaultdict
 
 import requests
+from IPython import embed
 
 from secret import BASEPATH
 from screenshot import get_screenshot
@@ -43,10 +44,15 @@ class ItemMixer(object):
                         item_zh = item
                     if item['lang'] == 'en-US':
                         item_en = item
+                # Add Chinese content into English item, add keys.
                 item_en['has_zh'] = True
                 item_en['title_zh'] = item_zh['title']
                 item_en['desc_zh'] = item_zh['desc']
                 item_en['detail_zh'] = item_zh['detail']
+                items.append(item_en)
+            elif len(group) == 1:
+                item_en = group[0]
+                item_en['has_zh'] = False
                 items.append(item_en)
         return items
 
@@ -96,3 +102,13 @@ class ItemMixer(object):
 
         # Save the screenshot of the item for showing the price.
         get_screenshot(item['url'], filepath)
+
+        # Make a file for flickr uploading.
+        with open(folderpath + '/ready_to_upload.txt', 'w') as f:
+            flickr_headline = '%s - %s' % (brand, item['title'])
+            f.write(flickr_headline.encode('utf8'))
+
+        # Backup mixed item data to a JSON file.
+        with open(folderpath + '/item_data.json', 'wb') as f:
+            data = json.dumps(item)
+            f.write(data)

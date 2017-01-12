@@ -104,7 +104,7 @@ class ItemMixer(object):
         get_screenshot(item['url'], filepath)
 
         # Make a file for flickr uploading.
-        with open(folderpath + '/ready_to_upload.txt', 'w') as f:
+        with open(folderpath + '/ready_to_upload.flk', 'w') as f:
             flickr_headline = '%s - %s' % (brand, item['title'])
             f.write(flickr_headline.encode('utf8'))
 

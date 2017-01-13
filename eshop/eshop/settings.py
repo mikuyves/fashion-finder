@@ -13,8 +13,9 @@ import sys
 import os
 from os.path import dirname
 # Set the directory for using the modules in the same project such as filickr.
-path = dirname(dirname(os.path.abspath(os.path.dirname(__file__))))
-sys.path.append(path)
+PROJECT_PATH = dirname(dirname(os.path.abspath(os.path.dirname(__file__))))
+FLICKR_PATH = os.path.join(PROJECT_PATH, 'flickr/')
+sys.path.append(PROJECT_PATH)
 import flickr
 
 BOT_NAME = 'eshop'

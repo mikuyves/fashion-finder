@@ -25,7 +25,7 @@ class Product(scrapy.Item):
 
     photo_urls = scrapy.Field()
 
-    last_update = scrapy.Field()
+    found_date = scrapy.Field()
 
 
 class ProductLoader(ItemLoader):

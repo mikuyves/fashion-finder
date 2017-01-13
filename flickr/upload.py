@@ -4,6 +4,7 @@ import os
 import re
 import json
 import logging
+from datetime import datetime
 
 import flickrapi
 from flickrapi.core import FlickrError
@@ -24,6 +25,9 @@ logging.basicConfig(
     filemode='w',
 )
 logging.getLogger('Flickr')
+
+date_tag = datetime.strftime(datetime.now(), 'ud%Y%m%d')
+date_photoset = datetime.strftime(datetime.now(), 'FOUND-%Y.%m')
 
 
 def to_unicode_or_bust(obj, encoding='utf-8'):
@@ -65,32 +69,41 @@ class MyFlickr(object):
 
 
     def start_upload(self):
-        # Get all the folders which are ready to be uploaded.
         folders = []
-        for root, sub, files in os.walk(secret.BASEPATH):
-            if 'ready_to_upload.flk' in files:
-                self.upload(root, files)
+        for root, sub, filenames in os.walk(secret.BASEPATH):
+            # Get all the folders which are ready to be uploaded. flk file is
+            # a custom file type for telling whether a folder(an item) is uploaded.
+            if 'ready_to_upload.flk' in filenames:
+                self.upload(root, filenames)
+                # Change the flk filename avoiding repetitional uploading.
+                os.rename(
+                    os.path.join(root, 'ready_to_upload.flk'),
+                    os.path.join(root, 'uploaded.flk')
+                )
+
+        # Add the uploaded photos to the specific alblum.
+        self.add_to_photoset()
 
 
-    def upload(self, path, files):
+    def upload(self, path, filenames):
         # Get the data from the backup files.
-        headline_file = [f for f in files if re.search(r'flk$', f)][0]
+        headline_file = [f for f in filenames if re.search(r'flk$', f)][0]
         headline = self.get_content(path, headline_file)
 
-        desc_file = [f for f in files if re.search(r'txt$', f)][0]
+        desc_file = [f for f in filenames if re.search(r'txt$', f)][0]
         desc = self.get_content(path, desc_file)
 
-        print 'START UPLOADDING %s' % headline
-        print '=' * 50
-
         # Upload photos.
-        images = [f for f in files if re.search(r'(jpg|jpeg|png)$', f)]
+        print 'START UPLOADDING %s' % headline
+        images = [f for f in filenames if re.search(r'(jpg|jpeg|png)$', f)]
         with progressbar.ProgressBar(max_value=len(images)) as bar:
-            for i, image in enumerate(images):
+            for i, image in enumerate(images, start=1):
                 self.flickr.upload(
-                    filename='/'.join((path, image)),
+                    filename=os.path.join(path, image),
                     title=headline,
                     description=desc,
+                    tags=date_tag,
+                    is_friend='1',
                 )
                 bar.update(i)
                 logging.info('%s uploaded.' % image)
@@ -98,8 +111,8 @@ class MyFlickr(object):
         print '=' * 50
 
 
-    def get_content(self, path, _file):
-        with open('/'.join((path, _file))) as f:
+    def get_content(self, path, filename):
+        with open(os.path.join(path, filename)) as f:
             content = f.read()
         return content
 
@@ -109,8 +122,8 @@ class MyFlickr(object):
         # Be careful: we need dada with parsed-json, here self.flickr format
         # changed, it is different from the initialization.
         self.flickr = flickrapi.FlickrAPI(api_key, api_secret, format='parsed-json')
-        recent_photos_data = self.flickr.photos.recentlyUpdated(
-            per_page=200, min_date='20170112'
+        recent_photos_data = self.flickr.photos.search(
+            user_id='me', tags=date_tag, per_page=200, min_upload_date=date_tag
         )
         photos = recent_photos_data[u'photos'][u'photo']
 
@@ -120,20 +133,19 @@ class MyFlickr(object):
                 photosets = json.loads(f.read())
 
             # ' - ' is the rule that names headline.
-            if ' - ' in photo[u'title']:
-                brand = photo[u'title'].split(' - ')[0].upper()
-                photo_id = photo[u'id']
+            brand = photo[u'title'].split(' - ')[0].upper()
+            photo_id = photo[u'id']
 
-                print photo['title']
-                target_photosets = [brand, 'FOUND', 'FOUND-2017.01']
-                with progressbar.ProgressBar(
-                    max_value=len(target_photosets), redirect_stdout=True
-                ) as bar:
+            print photo['title']
+            target_photosets = [brand, 'FOUND', date_photoset]
+            with progressbar.ProgressBar(
+                max_value=len(target_photosets), redirect_stdout=True
+            ) as bar:
 
-                    for i, photoset in enumerate(target_photosets):
-                        self.add_photo(photo, photo_id, photosets, photoset)
-                        print '--> %s OK.' % photoset.encode('utf-8')
-                        bar.update(i)
+                for i, photoset in enumerate(target_photosets, start=1):
+                    self.add_photo(photo, photo_id, photosets, photoset)
+                    print '--> %s OK.' % photoset.encode('utf-8')
+                    bar.update(i)
 
 
     def add_photo(self, photo, photo_id, photosets, photoset):

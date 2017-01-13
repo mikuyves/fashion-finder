@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
 import hashlib
+from datetime import datetime
 
 import scrapy
 from requests.utils import urlparse
@@ -68,6 +69,7 @@ class LcSpider(scrapy.Spider):
         pl.add_value('url', response.url)
         pl.add_value('url_status', response.status)
         pl.add_value('website', urlparse(response.url).hostname)
+        pl.add_value('found_date', datetime.strftime(datetime.now(), 'fd%Y%m%d'))
 
         css_rules = website_rules[rule]['css_rules']
         for field, css in css_rules.items():

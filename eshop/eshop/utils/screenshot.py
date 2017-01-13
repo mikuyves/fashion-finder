@@ -4,10 +4,13 @@ from selenium import webdriver
 
 
 lc_js = '''
-// Focus to the item.
+// Let the screen focus on the item.
 window.scrollBy(0, 174);
-// Set the price back to origin, and delete the elements about discount.
-$(".sale-price").text($(".discounted-price").text());
+// Set the price back to origin if it is on sale.
+if ($(".discounted-price").text().replace(/(^\s*)|(\s*$)/g, '').length != 0){
+    $(".sale-price").text($(".discounted-price").text());
+};
+// Delete the elements about discount.
 $(".discounted-price").remove();
 $(".save-percentage").remove();
 '''

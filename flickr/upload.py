@@ -1,16 +1,29 @@
+# -*- coding: utf-8 -*-
 #!/usr/bin/env python
 import os
 import re
 import json
+import logging
 
 import flickrapi
 from flickrapi.core import FlickrError
 import webbrowser
+import progressbar
 from IPython import embed
 
 import secret
 from secret import BASEPATH, api_key, api_secret
 import data
+
+
+logging.basicConfig(
+    level=logging.WARN,
+    format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',
+    datefmt='%a, %d %b %Y %H:%M:%S',
+    filename='flickr.log',
+    filemode='w',
+)
+logging.getLogger('Flickr')
 
 
 def to_unicode_or_bust(obj, encoding='utf-8'):
@@ -21,9 +34,11 @@ def to_unicode_or_bust(obj, encoding='utf-8'):
 
 
 class MyFlickr(object):
+
     def __init__(self):
         self.flickr = flickrapi.FlickrAPI(api_key, api_secret)
         self.authenticate()
+
 
     def authenticate(self):
         print 'Step 1: AUTHENTICATE'
@@ -48,12 +63,14 @@ class MyFlickr(object):
             if self.flickr.token_valid(perms=u'write'):
                 print 'Authentication is OK.'
 
+
     def start_upload(self):
         # Get all the folders which are ready to be uploaded.
         folders = []
         for root, sub, files in os.walk(secret.BASEPATH):
             if 'ready_to_upload.flk' in files:
                 self.upload(root, files)
+
 
     def upload(self, path, files):
         # Get the data from the backup files.
@@ -68,20 +85,24 @@ class MyFlickr(object):
 
         # Upload photos.
         images = [f for f in files if re.search(r'(jpg|jpeg|png)$', f)]
-        for image in images:
-            self.flickr.upload(
-                filename='/'.join((path, image)),
-                title=headline,
-                description=desc,
-            )
-            print '%s uploaded.' % image
-        print 'WELL DONE!'
+        with progressbar.ProgressBar(max_value=len(images)) as bar:
+            for i, image in enumerate(images):
+                self.flickr.upload(
+                    filename='/'.join((path, image)),
+                    title=headline,
+                    description=desc,
+                )
+                bar.update(i)
+                logging.info('%s uploaded.' % image)
+        print 'DONE!'
         print '=' * 50
+
 
     def get_content(self, path, _file):
         with open('/'.join((path, _file))) as f:
             content = f.read()
         return content
+
 
     def add_to_photoset(self):
         # Flickr cannot add photos to photoset while uploading photos by api.
@@ -103,28 +124,38 @@ class MyFlickr(object):
                 brand = photo[u'title'].split(' - ')[0].upper()
                 photo_id = photo[u'id']
 
-                if brand in photosets:
-                    self.add_photo(photo, photo_id, photosets, brand)
-                    self.add_photo(photo, photo_id, photosets, 'FOUND')
-                    self.add_photo(photo, photo_id, photosets, 'FOUND-2017.01')
-                else:
-                    self.update_photoset(brand, photo_id)
-                    print 'Photo added to %s!\n+++ %s\n' % (brand, photo)
+                print photo['title']
+                target_photosets = [brand, 'FOUND', 'FOUND-2017.01']
+                with progressbar.ProgressBar(
+                    max_value=len(target_photosets), redirect_stdout=True
+                ) as bar:
+
+                    for i, photoset in enumerate(target_photosets):
+                        self.add_photo(photo, photo_id, photosets, photoset)
+                        print '--> %s OK.' % photoset.encode('utf-8')
+                        bar.update(i)
+
 
     def add_photo(self, photo, photo_id, photosets, photoset):
-        try:
-            self.flickr.photosets.addPhoto(
-                photoset_id=photosets[photoset], photo_id=photo_id
-            )
-            print 'Photo added to %s!\n+++ %s\n' % (photoset, photo)
-        except FlickrError as e:
-            print '%s %s\n--- %s\n' % (e, photoset, photo)
+        if photoset not in photosets:
+            self.update_photoset(photoset, photo_id)
+            logging.info('Photo added to %s!\n+++ %s\n' % (photoset, photo))
+        else:
+            try:
+                self.flickr.photosets.addPhoto(
+                    photoset_id=photosets[photoset], photo_id=photo_id
+                )
+                logging.info('Photo added to %s!\n+++ %s\n' % (photoset, photo))
+            except FlickrError as e:
+                logging.info('REPETITION: %s %s\n--- %s\n' % (e, photoset, photo))
+
 
     def update_photoset(self, brand, photo_id):
         self.flickr.photosets.create(title=brand, primary_photo_id=photo_id)
-        print '+++ Add a new photoset: %s\n' % brand
+        logging.warn('+++ Add a new photoset: %s\n' % brand)
         self.backup_photoset()
-        print '+++ Local photosets data updated.\n'
+        logging.warn('+++ Local photosets data updated.\n')
+
 
     def backup_photoset(self):
         # Be careful: self.flickr format changed, it is different from the initialization.

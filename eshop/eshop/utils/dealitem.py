@@ -5,6 +5,7 @@ from collections import defaultdict
 
 import requests
 from IPython import embed
+import progressbar
 
 from secret import BASEPATH
 from screenshot import get_screenshot
@@ -93,12 +94,18 @@ class ItemMixer(object):
             f.write(item['url'].encode('utf8'))
 
         # Download photos.
-        for num, photo_url in enumerate(item['photo_urls'], start=1):
-            photo = requests.get(photo_url)
-            filename = '%s_%d.jpg' % (filename_base, num)
-            filepath = '/'.join([folderpath, filename])
-            with open(filepath, 'wb') as f:
-                f.write(photo.content)
+        print 'Start downloading photos...\n'
+        with progressbar.ProgressBar(
+            max_value=len(item['photo_urls']), redirect_stdout=True
+        ) as bar:
+            for num, photo_url in enumerate(item['photo_urls'], start=1):
+                photo = requests.get(photo_url)
+                filename = '%s_%d.jpg' % (filename_base, num)
+                filepath = '/'.join([folderpath, filename])
+                with open(filepath, 'wb') as f:
+                    f.write(photo.content)
+                bar.update(num)
+                print '%s --> OK!' % photo_url
 
         # Save the screenshot of the item for showing the price.
         get_screenshot(item['url'], filepath)

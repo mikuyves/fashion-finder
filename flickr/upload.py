@@ -4,6 +4,7 @@ import os
 import re
 import json
 import logging
+import logging.config
 from datetime import datetime
 
 import flickrapi
@@ -12,19 +13,13 @@ import webbrowser
 import progressbar
 from IPython import embed
 
-import secret
+from settings import PROJECT_PATH
 from secret import BASEPATH, api_key, api_secret
 import data
 
 
-logging.basicConfig(
-    level=logging.WARN,
-    format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',
-    datefmt='%a, %d %b %Y %H:%M:%S',
-    filename='flickr.log',
-    filemode='w',
-)
-logging.getLogger('Flickr')
+logging.config.fileConfig(os.path.join(PROJECT_PATH, 'log.conf'))
+logger = logging.getLogger('flickr')
 
 date_tag = datetime.strftime(datetime.now(), 'ud%Y%m%d')
 date_photoset = datetime.strftime(datetime.now(), 'FOUND-%Y.%m')
@@ -42,7 +37,6 @@ class MyFlickr(object):
     def __init__(self):
         self.flickr = flickrapi.FlickrAPI(api_key, api_secret)
         self.authenticate()
-
 
     def authenticate(self):
         print 'Step 1: AUTHENTICATE'
@@ -67,10 +61,9 @@ class MyFlickr(object):
             if self.flickr.token_valid(perms=u'write'):
                 print 'Authentication is OK.'
 
-
     def start_upload(self):
         folders = []
-        for root, sub, filenames in os.walk(secret.BASEPATH):
+        for root, sub, filenames in os.walk(BASEPATH):
             # Get all the folders which are ready to be uploaded. flk file is
             # a custom file type for telling whether a folder(an item) is uploaded.
             if 'ready_to_upload.flk' in filenames:
@@ -80,10 +73,8 @@ class MyFlickr(object):
                     os.path.join(root, 'ready_to_upload.flk'),
                     os.path.join(root, 'uploaded.flk')
                 )
-
         # Add the uploaded photos to the specific alblum.
         self.add_to_photoset()
-
 
     def upload(self, path, filenames):
         # Get the data from the backup files.
@@ -106,16 +97,14 @@ class MyFlickr(object):
                     is_friend='1',
                 )
                 bar.update(i)
-                logging.info('%s uploaded.' % image)
+                logger.info('%s uploaded.' % image)
         print 'DONE!'
-        print '=' * 50
-
+        print '=' * 50 + '\n'
 
     def get_content(self, path, filename):
         with open(os.path.join(path, filename)) as f:
             content = f.read()
         return content
-
 
     def add_to_photoset(self):
         # Flickr cannot add photos to photoset while uploading photos by api.
@@ -147,27 +136,24 @@ class MyFlickr(object):
                     print '--> %s OK.' % photoset.encode('utf-8')
                     bar.update(i)
 
-
     def add_photo(self, photo, photo_id, photosets, photoset):
         if photoset not in photosets:
             self.update_photoset(photoset, photo_id)
-            logging.info('Photo added to %s!\n+++ %s\n' % (photoset, photo))
+            logger.info('Photo added to %s!\n+++ %s\n' % (photoset, photo))
         else:
             try:
                 self.flickr.photosets.addPhoto(
                     photoset_id=photosets[photoset], photo_id=photo_id
                 )
-                logging.info('Photo added to %s!\n+++ %s\n' % (photoset, photo))
+                logger.info('Photo added to %s!\n+++ %s\n' % (photoset, photo))
             except FlickrError as e:
-                logging.info('REPETITION: %s %s\n--- %s\n' % (e, photoset, photo))
-
+                logger.info('REPETITION: %s %s\n--- %s\n' % (e, photoset, photo))
 
     def update_photoset(self, brand, photo_id):
         self.flickr.photosets.create(title=brand, primary_photo_id=photo_id)
-        logging.warn('+++ Add a new photoset: %s\n' % brand)
+        logger.warn('+++ Add a new photoset: %s\n' % brand)
         self.backup_photoset()
-        logging.warn('+++ Local photosets data updated.\n')
-
+        logger.warn('+++ Local photosets data updated.\n')
 
     def backup_photoset(self):
         # Be careful: self.flickr format changed, it is different from the initialization.

@@ -7,26 +7,15 @@ import scrapy
 from requests.utils import urlparse
 
 from eshop.items import Product, ProductLoader
-
-
-# Notice: `en2zh` is a function which change the English website to Chinese.
-website_rules = {
-    'www.lanecrawford.com': {
-        'has_zh_maybe': True,
-        'en2zh': lambda x: re.sub(r'.com', '.com.cn', x),
-        'css_rules': {
-            'brand': '.lc-product-brand-refresh::text',
-            'title': '.lc-product-short-description-refresh::text',
-            'desc': '.text-paragraph::text',
-            'detail': '.sizeAndFit li::text',
-            'photo_urls': '.hero-carousel__img::attr(data-xl)',
-        }
-    },
-}
+from eshop.data.rules import website_rules
 
 
 class LcSpider(scrapy.Spider):
     name = 'lc'
+
+    def __init__(self, url=None, *args, **kwargs):
+        super(LcSpider, self).__init__(*args, **kwargs)
+        self.url = url
 
     def start_requests(self):
         # What we want is an item in English and the Chinese translation which
@@ -40,7 +29,7 @@ class LcSpider(scrapy.Spider):
         # There is only one rule in both English and Chinese website. `rule`
         # here is the hostname which is the key in `website_rules`.
 
-        url = raw_input('Enter the URL: ')
+        url = self.url
         rule = urlparse(url).hostname
         pid = self.get_pid(url)
 

@@ -11,7 +11,7 @@ from scrapy.exceptions import DropItem
 from eshop.utils import dealtext
 from eshop.utils.dealitem import ItemMixer
 from eshop.settings import FLICKR_PATH
-from flickr.upload import MyFlickr
+#from flickr.upload import MyFlickr
 
 
 class CheckItemPipeline(object):
@@ -35,11 +35,11 @@ class JsonWriterPipeline(object):
         mixer = ItemMixer('items.jl')
         mixer.save_items()
 
-        # Upload to flickr.
-        import os
-        os.chdir(FLICKR_PATH)
-        f = MyFlickr()
-        f.start_upload()
+#        # Upload to flickr.
+#        import os
+#        os.chdir(FLICKR_PATH)
+#        f = MyFlickr()
+#        f.start_upload()
 
     def process_item(self, item, spider):
         line = json.dumps(dict(item)) + '\n'

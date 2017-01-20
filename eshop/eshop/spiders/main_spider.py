@@ -1,16 +1,19 @@
 # -*- coding: utf-8 -*-
+import os
+
 from twisted.internet import reactor
 from scrapy.crawler import CrawlerRunner
 from scrapy.utils.project import get_project_settings
 
-def print_end():
-    print 'This the end.'
+
 
 if __name__ == '__main__':
     runner = CrawlerRunner(get_project_settings())
+    from eshop.settings import PROJECT_PATH
 
-    input_url = 'http://www.lanecrawford.com/product/acne-studios/-amey-struct-v-neck-blazer-top/_/WAQ079/product.lc'
-    runner.crawl('lc', url=input_url)
+    with open(os.path.join(PROJECT_PATH, 'urls.txt')) as f:
+        urls = f.read().split('\n')
+    runner.crawl('lc', urls=urls)
     d = runner.join()
     d.addBoth(lambda _: reactor.stop())
 

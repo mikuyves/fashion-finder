@@ -13,9 +13,9 @@ from eshop.data.rules import website_rules
 class LcSpider(scrapy.Spider):
     name = 'lc'
 
-    def __init__(self, url=None, *args, **kwargs):
+    def __init__(self, urls=None, *args, **kwargs):
         super(LcSpider, self).__init__(*args, **kwargs)
-        self.url = url
+        self.urls = urls
 
     def start_requests(self):
         # What we want is an item in English and the Chinese translation which
@@ -29,17 +29,17 @@ class LcSpider(scrapy.Spider):
         # There is only one rule in both English and Chinese website. `rule`
         # here is the hostname which is the key in `website_rules`.
 
-        url = self.url
-        rule = urlparse(url).hostname
-        pid = self.get_pid(url)
+        for url in self.urls:
+            rule = urlparse(url).hostname
+            pid = self.get_pid(url)
 
-        # Request English website.
-        yield scrapy.Request(url, self.parse, meta={'rule': rule, 'lang': 'en-US', 'pid': pid})
+            # Request English website.
+            yield scrapy.Request(url, self.parse, meta={'rule': rule, 'lang': 'en-US', 'pid': pid})
 
-        # Request Chinese website if it could.
-        if website_rules[rule]['has_zh_maybe']:
-            url = self.get_url_zh(rule, url)
-            yield scrapy.Request(url, self.parse, meta={'rule': rule, 'lang': 'zh-CN', 'pid': pid})
+            # Request Chinese website if it could.
+            if website_rules[rule]['has_zh_maybe']:
+                url = self.get_url_zh(rule, url)
+                yield scrapy.Request(url, self.parse, meta={'rule': rule, 'lang': 'zh-CN', 'pid': pid})
 
     def parse(self, response):
         # Parse single item no matter which language.

@@ -5,6 +5,7 @@
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
 import json
+from urlparse import urlparse
 
 from scrapy.exceptions import DropItem
 
@@ -20,7 +21,26 @@ class CheckItemPipeline(object):
         if item['lang'] == 'zh-CN' and not dealtext.match_zh(item['title']):
             raise DropItem('No Chinese translation yet: %s', item)
         else:
+            self.check_url(item)
             return item
+
+    def check_url(self, item):
+        photo_urls = item['photo_urls']
+        scheme = urlparse(item['url']).scheme
+        netloc = item['website']
+
+        checked_urls = []
+        for url in photo_urls:
+            parsed_url = urlparse(url)
+            if parsed_url.scheme and parsed_url.netloc:
+                return
+            elif not parsed_url.scheme and not parsed_url.netloc:
+                url = parsed_url._replace(**{'scheme': scheme, 'netloc': netloc}).geturl()
+            elif not parsed_url.scheme:
+                url = parsed_url._replace(**{'scheme': scheme}).geturl()
+            checked_urls.append(url)
+
+        item['photo_urls'] = checked_urls
 
 
 class JsonWriterPipeline(object):

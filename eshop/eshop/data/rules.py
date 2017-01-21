@@ -2,6 +2,8 @@
 import re
 
 # Notice: `en2zh` is a function which change the English website to Chinese.
+# TODO: net-a-porter.com, if only change /en/ to /zh/, the spider will be baned.
+# But I don't know why yet.
 website_rules = {
     'www.lanecrawford.com': {
         'has_zh_maybe': True,
@@ -16,7 +18,7 @@ website_rules = {
     },
     'www.net-a-porter.com': {
         'has_zh_maybe': True,
-        'en2zh': lambda x: re.sub(r'/en/', '/zh/', x),
+        'en2zh': lambda x: re.sub(r'/us/en/', '/cn/zh/', x),
         'css_rules': {
             'brand': '.designer-name span::text',
             'title': '.product-name::text',

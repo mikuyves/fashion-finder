@@ -108,7 +108,7 @@ class ItemMixer(object):
                 print '%s --> OK!' % photo_url
 
         # Save the screenshot of the item for showing the price.
-        get_screenshot(item['url'], filepath)
+        get_screenshot(item['url'], filepath, item['website'])
 
         # Make a file for flickr uploading.
         with open(folderpath + '/ready_to_upload.flk', 'w') as f:

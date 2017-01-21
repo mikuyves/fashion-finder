@@ -35,7 +35,7 @@ PROXIES = [
     {'ip_port': '60.13.143.99:8080', 'user_pass': ''},
 ]
 
-COOKIES_ENABLED=False
+COOKIES_ENABLED=True
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'eshop (+http://www.yourdomain.com)'
@@ -49,7 +49,8 @@ ROBOTSTXT_OBEY = True
 # Configure a delay for requests for the same website (default: 0)
 # See http://scrapy.readthedocs.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
-DOWNLOAD_DELAY = 1
+DOWNLOAD_TIMEOUT = 5
+DOWNLOAD_DELAY = 5
 # The download delay setting will honor only one of:
 #CONCURRENT_REQUESTS_PER_DOMAIN = 16
 #CONCURRENT_REQUESTS_PER_IP = 16
@@ -75,7 +76,9 @@ DOWNLOAD_DELAY = 1
 # Enable or disable downloader middlewares
 # See http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
 DOWNLOADER_MIDDLEWARES = {
-    'eshop.middlewares.RandomUserAgent': 1,
+    'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None,
+    'eshop.middlewares.RotateUserAgentMiddleware': 1,
+#    'eshop.middlewares.RandomUserAgent': 1,
 #    'eshop.middlewares.ProxyMiddleware': 2,
 #    'eshop.middlewares.MyCustomDownloaderMiddleware': 543,
 }

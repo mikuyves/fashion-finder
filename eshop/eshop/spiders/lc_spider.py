@@ -1,14 +1,21 @@
 # -*- coding: utf-8 -*-
 import re
+import os
 import hashlib
+import logging
+import logging.config
 from datetime import datetime
 
 import scrapy
 from requests.utils import urlparse
+from IPython import embed
 
 from eshop.items import Product, ProductLoader
 from eshop.data.rules import website_rules
 
+from eshop.settings import PROJECT_PATH
+logging.config.fileConfig(os.path.join(PROJECT_PATH, 'log.conf'))
+logger = logging.getLogger('eshop')
 
 class LcSpider(scrapy.Spider):
     name = 'lc'
@@ -64,6 +71,7 @@ class LcSpider(scrapy.Spider):
         for field, css in css_rules.items():
             pl.add_css(field, css)
 
+        logger.info(pl.load_item())
         return pl.load_item()
 
     def get_pid(self, url):

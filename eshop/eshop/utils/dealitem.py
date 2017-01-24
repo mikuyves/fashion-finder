@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import json
+import logging
 from collections import defaultdict
 
 import requests
@@ -9,6 +10,9 @@ import progressbar
 
 from secret import BASEPATH
 from screenshot import get_screenshot
+
+
+logger = logging.getLogger(__name__)
 
 
 class ItemMixer(object):
@@ -43,11 +47,8 @@ class ItemMixer(object):
                 for item in group:
                     if item['lang'] == 'zh-CN':
                         item_zh = item
-                        print 'Mixing item.'
-                        print item_zh
                     if item['lang'] == 'en-US':
                         item_en = item
-                        print item_en
                 # Add Chinese content into English item, add keys.
                 try:
                     item_en['has_zh'] = True
@@ -70,68 +71,72 @@ class ItemMixer(object):
             self.save_item(item)
 
     def save_item(self, item):
+        # Define variables we need later.
         brand = item['brand']
         title = '.'.join(item['title'].split(' '))
         foldername = '%s_%s' % (brand, title)
         filename_base = '%s_%s' % (brand, title)
+        flickr_headline = '%s - %s' % (brand, item['title'])
         folderpath = os.path.join(BASEPATH, foldername)
 
+        # Check whether it has been downloaded before.
         try:
             os.mkdir(folderpath)
         except OSError as e:
-            print e
+            logger.warning(
+                '%s has been downloaded before. %s' % (flickr_headline, e)
+            )
+        else:
+            # Save the information to a txt file.
+            with open(folderpath + '/%s.txt' % filename_base, 'w') as f:
+                # Write Chinese content.
+                if item['has_zh']:
+                    f.write(item['title_zh'].encode('utf8'))
+                    f.write('\n\n')
+                    f.write(item['desc_zh'].encode('utf8'))
+                    f.write('\n\n')
+                    f.write('\n'.join(item['detail_zh']).encode('utf8'))
+                    f.write('\n\n')
 
-        # Save the information to a txt file.
-        with open(folderpath + '/%s.txt' % filename_base, 'w') as f:
-            # Write Chinese content.
-            if item['has_zh']:
-                f.write(item['title_zh'].encode('utf8'))
+                # Write content in English which is standard.
+                f.write(item['title'].encode('utf8'))
                 f.write('\n\n')
-                f.write(item['desc_zh'].encode('utf8'))
+                f.write(item['desc'].encode('utf8'))
                 f.write('\n\n')
-                f.write('\n'.join(item['detail_zh']).encode('utf8'))
+                f.write('\n'.join(item['detail']).encode('utf8'))
                 f.write('\n\n')
+                f.write(item['url'].encode('utf8'))
 
-            # Write standard content in English.
-            f.write(item['title'].encode('utf8'))
-            f.write('\n\n')
-            f.write(item['desc'].encode('utf8'))
-            f.write('\n\n')
-            f.write('\n'.join(item['detail']).encode('utf8'))
-            f.write('\n\n')
-            f.write(item['url'].encode('utf8'))
+            # Download photos.
+            print '\nDownloading photos of %s from %s' % (flickr_headline, item['website'])
+            with progressbar.ProgressBar(
+                max_value=len(item['photo_urls']), redirect_stdout=True
+            ) as bar:
+                for num, photo_url in enumerate(item['photo_urls'], start=1):
+                    try:
+                        photo = requests.get(photo_url)
+                    except Exception as e:
+                        print e
+                    finally:
+                        if photo.ok:
+                            filename = '%s_%d.jpg' % (filename_base, num)
+                            filepath = '/'.join([folderpath, filename])
+                            with open(filepath, 'wb') as f:
+                                f.write(photo.content)
+                            bar.update(num)
+                        else:
+                            logger.warning('WARNING: %s --> MISSED!' % photo_url)
 
-        # Download photos.
-        flickr_headline = '%s - %s' % (brand, item['title'])
-        print '\nStart downloading photos of %s...' % flickr_headline
-        with progressbar.ProgressBar(
-            max_value=len(item['photo_urls']), redirect_stdout=True
-        ) as bar:
-            for num, photo_url in enumerate(item['photo_urls'], start=1):
-                try:
-                    photo = requests.get(photo_url)
-                except Exception as e:
-                    print e
-                finally:
-                    if photo.ok:
-                        filename = '%s_%d.jpg' % (filename_base, num)
-                        filepath = '/'.join([folderpath, filename])
-                        with open(filepath, 'wb') as f:
-                            f.write(photo.content)
-                        bar.update(num)
-                    else:
-                        print 'WARNING: %s --> MISSED!' % photo_url
+            # Save the screenshot of the item for showing the regular price.
+            print 'Getting a screenshot...'
+            get_screenshot(item['url'], filepath, item['website'])
+            print 'Done.'
 
-        # Save the screenshot of the item for showing the price.
-        print '\nStart getting a screenshot...'
-        get_screenshot(item['url'], filepath, item['website'])
-        print 'Done.'
+            # Make a file for flickr uploading.
+            with open(folderpath + '/ready_to_upload.flk', 'w') as f:
+                f.write(flickr_headline.encode('utf8'))
 
-        # Make a file for flickr uploading.
-        with open(folderpath + '/ready_to_upload.flk', 'w') as f:
-            f.write(flickr_headline.encode('utf8'))
-
-        # Backup mixed item data to a JSON file.
-        with open(folderpath + '/item_data.json', 'wb') as f:
-            data = json.dumps(item)
-            f.write(data)
+            # Backup mixed item data to a JSON file.
+            with open(folderpath + '/item_data.json', 'wb') as f:
+                data = json.dumps(item)
+                f.write(data)

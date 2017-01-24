@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-import re
-import os
 import hashlib
 import logging
 import logging.config
@@ -8,14 +6,13 @@ from datetime import datetime
 
 import scrapy
 from requests.utils import urlparse
-from IPython import embed
 
 from eshop.items import Product, ProductLoader
 from eshop.data.rules import website_rules
 
-from eshop.settings import PROJECT_PATH
-logging.config.fileConfig(os.path.join(PROJECT_PATH, 'log.conf'))
-logger = logging.getLogger('eshop')
+
+logger = logging.getLogger(__name__)
+
 
 class LcSpider(scrapy.Spider):
     name = 'lc'
@@ -25,16 +22,12 @@ class LcSpider(scrapy.Spider):
         self.urls = urls
 
     def start_requests(self):
-        # What we want is an item in English and the Chinese translation which
+        # What we want is an item in English and its Chinese translation which
         # could parse in the same way. Two items would go into ItemPineline
-        # separately if we start request with two website, because only sigle
-        # item can be accepted, it difficult to combine two items together,
-        # especially parsing a ton of urls later. So we try to we start request
-        # the English website and then get the Chinese one and combine two
-        # languges websites' data together into one item, actually what we need
-        # in Chinese website is only the transtion text - title, desc and detail.
-        # There is only one rule in both English and Chinese website. `rule`
-        # here is the hostname which is the key in `website_rules`.
+        # separately, and we mix two became one by eshop.utils.dealitem.ItemMixer,
+        # actually what we need in Chinese website is only the transtion text -
+        # title, desc and detail. There is only one rule in both English and Chinese
+        # website. `rule` here is the hostname which is the key in `website_rules`.
 
         for url in self.urls:
             rule = urlparse(url).hostname
@@ -50,6 +43,7 @@ class LcSpider(scrapy.Spider):
 
     def parse(self, response):
         # Parse single item no matter which language.
+        print 'Parsing %s' % response.url
         pl = ProductLoader(item=Product(), response=response)
 
         # The value of `lang` is the only difference in parsing.

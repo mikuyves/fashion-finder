@@ -1,12 +1,16 @@
 # -*- coding: utf-8 -*-
-import re
-
-# Notice: `en2zh` is a function which change the English website to Chinese.
-# screenshot_js steps: 1) Let the screen focus on the item. 2) Set the price back
-# to origin if it is on sale. 3) Delete the elements about discount.
-
+################################### Notice ####################################
+# `en2zh` is a function which changes the English url into Chinese one.
+# `screenshot_js` steps:
+# 1) Let the screen focus on the item.
+# 2) Set the price back to origin if it is on sale.
+# 3) Delete the elements about discount.
+#
 # TODO: net-a-porter.com, if only change /en/ to /zh/, the spider will be baned.
 # But I don't know why yet.
+###############################################################################
+import re
+
 
 website_rules = {
     'www.lanecrawford.com': {

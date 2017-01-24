@@ -23,18 +23,6 @@ BOT_NAME = 'eshop'
 SPIDER_MODULES = ['eshop.spiders']
 NEWSPIDER_MODULE = 'eshop.spiders'
 
-# For avoiding being ban from the website, such as: vogue.com
-USER_AGENTS = [
-    "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.93 Safari/537.36",
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36",
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_2) AppleWebKit/601.3.9 (KHTML, like Gecko) Version/9.0.2 Safari/601.3.9",
-]
-
-PROXIES = [
-    {'ip_port': '58.213.19.233:10081', 'user_pass': ''},
-    {'ip_port': '60.13.143.99:8080', 'user_pass': ''},
-]
-
 COOKIES_ENABLED=True
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent

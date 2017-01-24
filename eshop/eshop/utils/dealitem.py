@@ -43,14 +43,22 @@ class ItemMixer(object):
                 for item in group:
                     if item['lang'] == 'zh-CN':
                         item_zh = item
+                        print 'Mixing item.'
+                        print item_zh
                     if item['lang'] == 'en-US':
                         item_en = item
+                        print item_en
                 # Add Chinese content into English item, add keys.
-                item_en['has_zh'] = True
-                item_en['title_zh'] = item_zh['title']
-                item_en['desc_zh'] = item_zh['desc']
-                item_en['detail_zh'] = item_zh['detail']
-                items.append(item_en)
+                try:
+                    item_en['has_zh'] = True
+                    item_en['title_zh'] = item_zh['title']
+                    item_en['desc_zh'] = item_zh['desc']
+                    item_en['detail_zh'] = item_zh['detail']
+                except KeyError as e:
+                    print 'There is something wrong with the key %s' % e
+                finally:
+                    items.append(item_en)
+
             elif len(group) == 1:
                 item_en = group[0]
                 item_en['has_zh'] = False
@@ -94,25 +102,33 @@ class ItemMixer(object):
             f.write(item['url'].encode('utf8'))
 
         # Download photos.
-        print 'Start downloading photos...\n'
+        flickr_headline = '%s - %s' % (brand, item['title'])
+        print '\nStart downloading photos of %s...' % flickr_headline
         with progressbar.ProgressBar(
             max_value=len(item['photo_urls']), redirect_stdout=True
         ) as bar:
             for num, photo_url in enumerate(item['photo_urls'], start=1):
-                photo = requests.get(photo_url)
-                filename = '%s_%d.jpg' % (filename_base, num)
-                filepath = '/'.join([folderpath, filename])
-                with open(filepath, 'wb') as f:
-                    f.write(photo.content)
-                bar.update(num)
-                print '%s --> OK!' % photo_url
+                try:
+                    photo = requests.get(photo_url)
+                except Exception as e:
+                    print e
+                finally:
+                    if photo.ok:
+                        filename = '%s_%d.jpg' % (filename_base, num)
+                        filepath = '/'.join([folderpath, filename])
+                        with open(filepath, 'wb') as f:
+                            f.write(photo.content)
+                        bar.update(num)
+                    else:
+                        print 'WARNING: %s --> MISSED!' % photo_url
 
         # Save the screenshot of the item for showing the price.
+        print '\nStart getting a screenshot...'
         get_screenshot(item['url'], filepath, item['website'])
+        print 'Done.'
 
         # Make a file for flickr uploading.
         with open(folderpath + '/ready_to_upload.flk', 'w') as f:
-            flickr_headline = '%s - %s' % (brand, item['title'])
             f.write(flickr_headline.encode('utf8'))
 
         # Backup mixed item data to a JSON file.

@@ -45,4 +45,22 @@ if ($(".container-title .sale") != 0){
     $(".container-title .discount").remove();
 }''',
     },
+
+    'www.farfetch.com': {
+        'has_zh_maybe': True,
+        'en2zh': lambda x: re.sub(r'.com', '.com/cn', x),
+        'css_rules': {
+            'brand': '.detail-brand a::text',
+            'title': '.detail-brand span::text',
+            'desc': '.product-detail p::text',
+            'detail': '.product-detail-dl dd::text',
+            'photo_urls': '.sliderProduct-link img::attr(data-fullsrc)',
+        },
+        'screenshot_js': '''window.scrollBy(0, 50);
+if ($(".js-discount-label").html().replace(/(^\W\s*)|(\W\s*$)/g, '').length != 0){
+    $(".js-discount-label").html($(".js-price-without-promotion").html());
+    $(".js-price-without-promotion").remove();
+    $(".js-price").remove();
+}''',
+    },
 }

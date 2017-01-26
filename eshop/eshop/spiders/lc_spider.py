@@ -61,9 +61,16 @@ class LcSpider(scrapy.Spider):
         pl.add_value('website', urlparse(response.url).hostname)
         pl.add_value('found_date', datetime.strftime(datetime.now(), 'fd%Y%m%d'))
 
-        css_rules = website_rules[rule]['css_rules']
-        for field, css in css_rules.items():
+        text_css = website_rules[rule]['text_css']
+        for field, css in text_css.items():
             pl.add_css(field, css)
+
+        photo_urls_css = website_rules[rule]['photo_urls_css']
+        photo_urls_re = website_rules[rule]['photo_urls_re']
+        if photo_urls_re:
+            pl.add_css('photo_urls', photo_urls_css, re=photo_urls_re)
+        else:
+            pl.add_css('photo_urls', photo_urls_css)
 
         logger.info(pl.load_item())
         return pl.load_item()

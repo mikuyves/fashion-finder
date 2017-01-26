@@ -21,8 +21,9 @@ website_rules = {
             'title': '.lc-product-short-description-refresh::text',
             'desc': '.text-paragraph::text',
             'detail': '.sizeAndFit li::text',
-            'photo_urls': '.hero-carousel__img::attr(data-xl)',
         },
+        'photo_urls_css': '.hero-carousel__img::attr(data-xl)',
+        'photo_urls_re': None,
         'screenshot_js': '''window.scrollBy(0, 174);
 if ($(".discounted-price").text().replace(/(^\s*)|(\s*$)/g, '').length != 0){
     $(".sale-price").text($(".discounted-price").text());
@@ -39,8 +40,9 @@ if ($(".discounted-price").text().replace(/(^\s*)|(\s*$)/g, '').length != 0){
             'title': '.product-name::text',
             'desc': '.show-hide-content .wrapper p::text',
             'detail': '.show-hide-content .wrapper ul li::text',
-            'photo_urls': '.thumbnail-image::attr(src)',
         },
+        'photo_urls_css': '.thumbnail-image::attr(src)',
+        'photo_urls_re': None,
         'screenshot_js': '''window.scrollBy(0, 174);
 if ($(".container-title .sale") != 0){
     $(".container-title .sale-price").text($(".container-title .full-price").text());
@@ -58,13 +60,32 @@ if ($(".container-title .sale") != 0){
             'title': '.detail-brand span::text',
             'desc': '.product-detail p::text',
             'detail': '.product-detail-dl dd::text',
-            'photo_urls': '.sliderProduct-link img::attr(data-fullsrc)',
         },
+        'photo_urls_css': '.sliderProduct-link img::attr(data-fullsrc)',
+        'photo_urls_re': None,
         'screenshot_js': '''window.scrollBy(0, 50);
 if ($(".js-discount-label").html().replace(/(^\W\s*)|(\W\s*$)/g, '').length != 0){
     $(".js-discount-label").html($(".js-price-without-promotion").html());
     $(".js-price-without-promotion").remove();
     $(".js-price").remove();
+}''',
+    },
+
+    'www.shopbop.com': {
+        'has_zh_maybe': True,
+        'en2zh': lambda x: re.sub(r'www.', 'cn.', x),
+        'text_css': {
+            'brand': '.brand-heading a::text',
+            'title': '.product-title::text',
+            'desc': '.content[itemprop*=description]::text',
+            'detail': 'div[id*=modelSize]::text',
+        },
+        'photo_urls_css': 'script[type*=text\/javascript]::text',
+        'photo_urls_re': 'zoom": "(\S+)"',
+        'screenshot_js': '''window.scrollBy(0, 150);
+if ($(".originalRetailPrice").length != 0){
+    $(".originalRetailPrice").removeClass("originalRetailPrice")
+    $(".priceBlock:eq(1)").remove();
 }''',
     },
 }

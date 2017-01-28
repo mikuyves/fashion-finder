@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
+import re
 import logging
 import logging.config
 
@@ -19,6 +20,7 @@ if __name__ == '__main__':
     # Get URLs in the file.
     with open(os.path.join(PROJECT_PATH, 'urls.txt')) as f:
         urls = f.read().split('\n')
+        urls = [re.sub(r'\?\S+$', '', url) for url in urls]
 
     # Start.
     runner.crawl('lc', urls=urls)

@@ -30,14 +30,14 @@ class LcSpider(scrapy.Spider):
         # website. `rule` here is the hostname which is the key in `website_rules`.
 
         for url in self.urls:
-            rule = urlparse(url).hostname
+            rule = website_rules[urlparse(url).hostname]
             pid = self.get_pid(url)
 
             # Request English website.
             yield scrapy.Request(url, self.parse, meta={'rule': rule, 'lang': 'en-US', 'pid': pid})
 
             # Request Chinese website if it could.
-            if website_rules[rule]['has_zh_maybe']:
+            if rule['has_zh_maybe']:
                 url = self.get_url_zh(rule, url)
                 yield scrapy.Request(url, self.parse, meta={'rule': rule, 'lang': 'zh-CN', 'pid': pid})
 
@@ -51,7 +51,6 @@ class LcSpider(scrapy.Spider):
         lang = response.meta['lang']
         pid = response.meta['pid']
 
-        pl.add_value('rule', rule)
         pl.add_value('lang', lang)
         pl.add_value('pid', pid)
 
@@ -61,12 +60,25 @@ class LcSpider(scrapy.Spider):
         pl.add_value('website', urlparse(response.url).hostname)
         pl.add_value('found_date', datetime.strftime(datetime.now(), 'fd%Y%m%d'))
 
-        text_css = website_rules[rule]['text_css']
-        for field, css in text_css.items():
-            pl.add_css(field, css)
+        # If it is a brand official webiste, brand has been identified.
+        if rule['type'] == 'Official':
+            pl.add_value('brand', rule['brand'])
+        else:
+            pl.add_css('brand', rule['brand'])
 
-        photo_urls_css = website_rules[rule]['photo_urls_css']
-        photo_urls_re = website_rules[rule]['photo_urls_re']
+        # Get title, description, details for two languages. CSS in some Chinese
+        # website is different from English one sometimes, such as: cn.burberry.com.
+        if lang == 'zh-CN' and 'text_css_zh' in rule:
+            text_css_zh = rule['text_css_zh']
+            self.add_text_css(pl, text_css_zh)
+        else:
+            text_css = rule['text_css']
+            self.add_text_css(pl, text_css)
+
+        # Get photo urls, some urls are in the javascript or JSON data which
+        # need to be found by re.
+        photo_urls_css = rule['photo_urls_css']
+        photo_urls_re = rule['photo_urls_re']
         if photo_urls_re:
             pl.add_css('photo_urls', photo_urls_css, re=photo_urls_re)
         else:
@@ -80,9 +92,11 @@ class LcSpider(scrapy.Spider):
 
     def get_url_zh(self, rule, url):
         # Change the English url to Chinese one by 'en2zh' function.
-        for r in website_rules:
-            if rule == r:
-                return website_rules[rule]['en2zh'](url)
+        return rule['en2zh'](url)
+
+    def add_text_css(self, pl, css_dict):
+        for field, css in css_dict.items():
+            pl.add_css(field, css)
 
     def parse_other_color(self, response):
         # Some pages has more than one color so that we should make another request.

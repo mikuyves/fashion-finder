@@ -34,5 +34,7 @@ class ProductLoader(ItemLoader):
     brand_in = MapCompose(unicode.strip, unicode.upper)
     title_in = MapCompose(unicode.strip, unicode.title)
     desc_in = MapCompose(unicode.strip)
+    desc_out = Join('\n')
+    detail_in = MapCompose(unicode.strip)
     detail_out = Identity()
     photo_urls_out = Identity()

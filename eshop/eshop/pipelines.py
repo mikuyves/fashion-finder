@@ -20,9 +20,11 @@ class CheckItemPipeline(object):
         # Check whether an item found in Chinese website has been translated.
         if item['lang'] == 'zh-CN' and not dealtext.match_zh(item['title']):
             raise DropItem('No Chinese translation yet: %s', item)
-        else:
-            # Check whether image urls of item are fit for downloading.
+        # Check whether image urls of item are fit for downloading.
+        elif item['lang'] == 'en-US':
             self.check_url(item)
+            return item
+        else:
             return item
 
     def check_url(self, item):

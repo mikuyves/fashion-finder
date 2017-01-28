@@ -16,8 +16,9 @@ website_rules = {
     'www.lanecrawford.com': {
         'has_zh_maybe': True,
         'en2zh': lambda x: re.sub(r'.com', '.com.cn', x),
-        'css_rules': {
-            'brand': '.lc-product-brand-refresh::text',
+        'type': 'Retailer',
+        'brand': '.lc-product-brand-refresh::text',
+        'text_css': {
             'title': '.lc-product-short-description-refresh::text',
             'desc': '.text-paragraph::text',
             'detail': '.sizeAndFit li::text',
@@ -35,8 +36,9 @@ if ($(".discounted-price").text().replace(/(^\s*)|(\s*$)/g, '').length != 0){
     'www.net-a-porter.com': {
         'has_zh_maybe': True,
         'en2zh': lambda x: re.sub(r'/us/en/', '/cn/zh/', x),
-        'css_rules': {
-            'brand': '.designer-name span::text',
+        'type': 'Retailer',
+        'brand': '.designer-name span::text',
+        'text_css': {
             'title': '.product-name::text',
             'desc': '.show-hide-content .wrapper p::text',
             'detail': '.show-hide-content .wrapper ul li::text',
@@ -55,10 +57,11 @@ if ($(".container-title .sale") != 0){
     'www.farfetch.com': {
         'has_zh_maybe': True,
         'en2zh': lambda x: re.sub(r'.com', '.com/cn', x),
-        'css_rules': {
-            'brand': '.detail-brand a::text',
+        'type': 'Retailer',
+        'brand': '.detail-brand a::text',
+        'text_css': {
             'title': '.detail-brand span::text',
-            'desc': '.product-detail p::text',
+            'desc': '.product-detail p[itemprop*=description]::text',
             'detail': '.product-detail-dl dd::text',
         },
         'photo_urls_css': '.sliderProduct-link img::attr(data-fullsrc)',
@@ -74,8 +77,9 @@ if ($(".js-discount-label").html().replace(/(^\W\s*)|(\W\s*$)/g, '').length != 0
     'www.shopbop.com': {
         'has_zh_maybe': True,
         'en2zh': lambda x: re.sub(r'www.', 'cn.', x),
+        'type': 'Retailer',
+        'brand': '.brand-heading a::text',
         'text_css': {
-            'brand': '.brand-heading a::text',
             'title': '.product-title::text',
             'desc': '.content[itemprop*=description]::text',
             'detail': 'div[id*=modelSize]::text',
@@ -87,5 +91,25 @@ if ($(".originalRetailPrice").length != 0){
     $(".originalRetailPrice").removeClass("originalRetailPrice")
     $(".priceBlock:eq(1)").remove();
 }''',
+    },
+
+    'us.burberry.com': {
+        'has_zh_maybe': True,
+        'en2zh': lambda x: re.sub(r'us.', 'cn.', x) + '?locale=zh-CN',
+        'type': 'Official',
+        'brand': u'BURBERRY',
+        'text_css': {
+            'title': 'h1::text',
+            'desc': '.cell-paragraph_description li::text',
+            'detail': '.cell-paragraph_details li::text',
+        },
+        'text_css_zh': {
+            'title': 'h1::text',
+            'desc': '.accordion-tab_content p::text',
+            'detail': '.accordion-tab_sub-item li::text',
+        },
+        'photo_urls_css': 'div::attr(data-zoom-src)',
+        'photo_urls_re': None,
+        'screenshot_js': ''';''',
     },
 }

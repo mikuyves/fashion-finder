@@ -21,7 +21,7 @@ class Product(scrapy.Item):
     brand = scrapy.Field()
     title = scrapy.Field()
     desc = scrapy.Field()
-    detail = scrapy.Field()
+    details = scrapy.Field()
 
     photo_urls = scrapy.Field()
 
@@ -35,6 +35,6 @@ class ProductLoader(ItemLoader):
     title_in = MapCompose(unicode.strip, unicode.title)
     desc_in = MapCompose(unicode.strip)
     desc_out = Join('\n')
-    detail_in = MapCompose(unicode.strip)
-    detail_out = Identity()
+    details_in = MapCompose(unicode.strip)
+    details_out = Identity()
     photo_urls_out = Identity()

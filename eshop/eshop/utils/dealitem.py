@@ -54,7 +54,7 @@ class ItemMixer(object):
                     item_en['has_zh'] = True
                     item_en['title_zh'] = item_zh['title']
                     item_en['desc_zh'] = item_zh['desc']
-                    item_en['detail_zh'] = item_zh['detail']
+                    item_en['details_zh'] = item_zh['details']
                 except KeyError as e:
                     print 'There is something wrong with the key %s' % e
                 finally:
@@ -95,7 +95,7 @@ class ItemMixer(object):
                     f.write('\n\n')
                     f.write(item['desc_zh'].encode('utf8'))
                     f.write('\n\n')
-                    f.write('\n'.join(item['detail_zh']).encode('utf8'))
+                    f.write('\n'.join(item['details_zh']).encode('utf8'))
                     f.write('\n\n')
 
                 # Write content in English which is standard.
@@ -103,7 +103,7 @@ class ItemMixer(object):
                 f.write('\n\n')
                 f.write(item['desc'].encode('utf8'))
                 f.write('\n\n')
-                f.write('\n'.join(item['detail']).encode('utf8'))
+                f.write('\n'.join(item['details']).encode('utf8'))
                 f.write('\n\n')
                 f.write(item['url'].encode('utf8'))
 

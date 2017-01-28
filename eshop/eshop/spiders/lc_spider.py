@@ -26,7 +26,7 @@ class LcSpider(scrapy.Spider):
         # could parse in the same way. Two items would go into ItemPineline
         # separately, and we mix two became one by eshop.utils.dealitem.ItemMixer,
         # actually what we need in Chinese website is only the transtion text -
-        # title, desc and detail. There is only one rule in both English and Chinese
+        # title, desc and details. There is only one rule in both English and Chinese
         # website. `rule` here is the hostname which is the key in `website_rules`.
 
         for url in self.urls:

@@ -21,7 +21,7 @@ website_rules = {
         'text_css': {
             'title': '.lc-product-short-description-refresh::text',
             'desc': '.text-paragraph::text',
-            'detail': '.sizeAndFit li::text',
+            'details': '.sizeAndFit li::text',
         },
         'photo_urls_css': '.hero-carousel__img::attr(data-xl)',
         'photo_urls_re': None,
@@ -41,7 +41,7 @@ if ($(".discounted-price").text().replace(/(^\s*)|(\s*$)/g, '').length != 0){
         'text_css': {
             'title': '.product-name::text',
             'desc': '.show-hide-content .wrapper p::text',
-            'detail': '.show-hide-content .wrapper ul li::text',
+            'details': '.show-hide-content .wrapper ul li::text',
         },
         'photo_urls_css': '.thumbnail-image::attr(src)',
         'photo_urls_re': None,
@@ -62,7 +62,7 @@ if ($(".container-title .sale") != 0){
         'text_css': {
             'title': '.detail-brand span::text',
             'desc': '.product-detail p[itemprop*=description]::text',
-            'detail': '.product-detail-dl dd::text',
+            'details': '.product-detail-dl dd::text',
         },
         'photo_urls_css': '.sliderProduct-link img::attr(data-fullsrc)',
         'photo_urls_re': None,
@@ -82,7 +82,7 @@ if ($(".js-discount-label").html().replace(/(^\W\s*)|(\W\s*$)/g, '').length != 0
         'text_css': {
             'title': '.product-title::text',
             'desc': '.content[itemprop*=description]::text',
-            'detail': 'div[id*=modelSize]::text',
+            'details': 'div[id*=modelSize]::text',
         },
         'photo_urls_css': 'script[type*=text\/javascript]::text',
         'photo_urls_re': 'zoom": "(\S+)"',
@@ -101,12 +101,12 @@ if ($(".originalRetailPrice").length != 0){
         'text_css': {
             'title': 'h1::text',
             'desc': '.cell-paragraph_description li::text',
-            'detail': '.cell-paragraph_details li::text',
+            'details': '.cell-paragraph_details li::text',
         },
         'text_css_zh': {
             'title': 'h1::text',
             'desc': '.accordion-tab_content p::text',
-            'detail': '.accordion-tab_sub-item li::text',
+            'details': '.accordion-tab_sub-item li::text',
         },
         'photo_urls_css': 'div::attr(data-zoom-src)',
         'photo_urls_re': None,

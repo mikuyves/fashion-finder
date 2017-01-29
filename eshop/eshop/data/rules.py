@@ -24,7 +24,6 @@ website_rules = {
             'details': '.sizeAndFit li::text',
         },
         'photo_urls_css': '.hero-carousel__img::attr(data-xl)',
-        'photo_urls_re': None,
         'screenshot_js': '''window.scrollBy(0, 174);
 if ($(".discounted-price").text().replace(/(^\s*)|(\s*$)/g, '').length != 0){
     $(".sale-price").text($(".discounted-price").text());
@@ -44,7 +43,6 @@ if ($(".discounted-price").text().replace(/(^\s*)|(\s*$)/g, '').length != 0){
             'details': '.show-hide-content .wrapper ul li::text',
         },
         'photo_urls_css': '.thumbnail-image::attr(src)',
-        'photo_urls_re': None,
         'screenshot_js': '''window.scrollBy(0, 174);
 if ($(".container-title .sale") != 0){
     $(".container-title .sale-price").text($(".container-title .full-price").text());
@@ -65,7 +63,6 @@ if ($(".container-title .sale") != 0){
             'details': '.product-detail-dl dd::text',
         },
         'photo_urls_css': '.sliderProduct-link img::attr(data-fullsrc)',
-        'photo_urls_re': None,
         'screenshot_js': '''window.scrollBy(0, 50);
 if ($(".js-discount-label").html().replace(/(^\W\s*)|(\W\s*$)/g, '').length != 0){
     $(".js-discount-label").html($(".js-price-without-promotion").html());
@@ -93,6 +90,26 @@ if ($(".originalRetailPrice").length != 0){
 }''',
     },
 
+    'www.mytheresa.com': {
+        'has_zh_maybe': True,
+        'en2zh': lambda x: re.sub(r'/en-us/', '/zh-cn/', x),
+        'type': 'Retailer',
+        'brand': '.product-shop .product-designer a::text',
+        'text_css': {
+            'title': '.product-shop .product-name span::text',
+            'desc': '.product-description::text',
+            'details': '.featurepoints li::text',
+        },
+        'photo_urls_css': '.gallery-image::attr(src)',
+        'photo_urls_get_hd': lambda x: re.sub(r'/1088/1088/66/', u'/2176/2176/90/', x),
+        'screenshot_js': '''window.scrollBy(0, 240);
+var price = document.getElementsByClassName('old-price')[0].childNodes[1].innerHTML;
+var info = document.getElementsByClassName('price-info')[0];
+info.innerHTML = '';
+info.appendChild(document.createTextNode(price));
+''',
+    },
+
     'us.burberry.com': {
         'has_zh_maybe': True,
         'en2zh': lambda x: re.sub(r'us.', 'cn.', x) + '?locale=zh-CN',
@@ -109,7 +126,6 @@ if ($(".originalRetailPrice").length != 0){
             'details': '.accordion-tab_sub-item li::text',
         },
         'photo_urls_css': 'div::attr(data-zoom-src)',
-        'photo_urls_re': None,
         'screenshot_js': ''';''',
     },
 }

@@ -19,7 +19,7 @@ class LcSpider(scrapy.Spider):
 
     def __init__(self, urls=None, *args, **kwargs):
         super(LcSpider, self).__init__(*args, **kwargs)
-        self.urls = urls
+        self.urls = ['http://www.mytheresa.com/en-us/printed-cotton-maxi-dress-616842.html']
 
     def start_requests(self):
         # What we want is an item in English and its Chinese translation which
@@ -78,11 +78,16 @@ class LcSpider(scrapy.Spider):
         # Get photo urls, some urls are in the javascript or JSON data which
         # need to be found by re.
         photo_urls_css = rule['photo_urls_css']
-        photo_urls_re = rule['photo_urls_re']
-        if photo_urls_re:
-            pl.add_css('photo_urls', photo_urls_css, re=photo_urls_re)
-        else:
-            pl.add_css('photo_urls', photo_urls_css)
+        try:
+            photo_urls = response.css(photo_urls_css).re(rule['photo_urls_re'])
+        except KeyError as e:
+            photo_urls = response.css(photo_urls_css).extract()
+        try:
+            photo_urls = [rule['photo_urls_get_hd'](url) for url in photo_urls]
+        except KeyError as e:
+            pass
+        finally:
+            pl.add_value('photo_urls', photo_urls)
 
         logger.info(pl.load_item())
         return pl.load_item()

@@ -91,7 +91,9 @@ class ItemMixer(object):
             with open(folderpath + '/%s.txt' % filename_base, 'w') as f:
                 # Write Chinese content.
                 if item['has_zh']:
-                    f.write(item['title_zh'].encode('utf8'))
+                    f.write(
+                        item['brand'].encode('utf8') + item['title_zh'].encode('utf8')
+                    )
                     f.write('\n\n')
                     f.write(item['desc_zh'].encode('utf8'))
                     f.write('\n\n')
@@ -99,7 +101,7 @@ class ItemMixer(object):
                     f.write('\n\n')
 
                 # Write content in English which is standard.
-                f.write(item['title'].encode('utf8'))
+                f.write(flickr_headline.encode('utf8'))
                 f.write('\n\n')
                 f.write(item['desc'].encode('utf8'))
                 f.write('\n\n')

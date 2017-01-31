@@ -73,10 +73,12 @@ class ItemMixer(object):
     def save_item(self, item):
         # Define variables we need later.
         brand = item['brand']
-        title = '.'.join(item['title'].split(' '))
-        foldername = '%s_%s' % (brand, title)
-        filename_base = '%s_%s' % (brand, title)
-        flickr_headline = '%s - %s' % (brand, item['title'])
+        title = item['title']
+        f_brand = '-'.join(brand.split(' '))
+        f_title = '-'.join(title.split(' ')).replace('/', '')
+        foldername = '%s_%s' % (f_brand, f_title)
+        filename_base = '%s_%s' % (f_brand, f_title)
+        flickr_headline = '%s - %s' % (brand, title)
         folderpath = os.path.join(BASEPATH, foldername)
 
         # Check whether it has been downloaded before.
@@ -92,7 +94,7 @@ class ItemMixer(object):
                 # Write Chinese content.
                 if item['has_zh']:
                     f.write(
-                        item['brand'].encode('utf8') + item['title_zh'].encode('utf8')
+                        '%s %s' % (brand.encode('utf8'), item['title_zh'].encode('utf8'))
                     )
                     f.write('\n\n')
                     f.write(item['desc_zh'].encode('utf8'))

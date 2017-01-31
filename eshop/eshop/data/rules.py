@@ -101,7 +101,7 @@ if ($(".originalRetailPrice").length != 0){
             'details': '.featurepoints li::text',
         },
         'photo_urls_css': '.gallery-image::attr(src)',
-        'photo_urls_get_hd': lambda x: re.sub(r'/1088/1088/66/', u'/2176/2176/90/', x),
+        'handle_photo_urls': lambda x: [re.sub(r'/1088/1088/66/', u'/2176/2176/90/', url) for url in x],
         'screenshot_js': '''window.scrollBy(0, 240);
 var price = document.getElementsByClassName('old-price')[0].childNodes[1].innerHTML;
 var info = document.getElementsByClassName('price-info')[0];
@@ -127,5 +127,30 @@ info.appendChild(document.createTextNode(price));
         },
         'photo_urls_css': 'div::attr(data-zoom-src)',
         'screenshot_js': ''';''',
+    },
+
+    'www.luisaviaroma.com': {
+        'has_zh_maybe': True,
+        'en2zh': lambda x: re.sub(r'/lang_EN/', '/lang_ZH/', x),
+        'type': 'Retailer',
+        'brand': '#sp_a_designer::text',
+        'text_css': {
+            'title': '#sp_a_category::text',
+            'desc': None,
+            'details': '#sp_details li::text',
+        },
+        'photo_urls_css': 'script',
+        'photo_urls_re': '"PhotosAll":\[(\S+)\],"PhotosByColor"',
+        'handle_photo_urls': lambda x: ['https://images.luisaviaroma.com/Zoom' + url for url in re.split('[",]+', x[0]) if url],
+        'screenshot_js': '''window.scrollBy(0, 50);
+$('#footer_tc_privacy_button').click();
+$('table').remove();
+var span_price = $('#sp_span_price');
+var price_text = span_price.text();
+var minus_index = price_text.indexOf('-')
+if (minus_index != -1){
+price_text.replace(price_text.slice(minus_index), '');
+$('#sp_span_discountedprice').remove();
+}''',
     },
 }

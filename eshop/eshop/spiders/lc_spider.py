@@ -19,7 +19,7 @@ class LcSpider(scrapy.Spider):
 
     def __init__(self, urls=None, *args, **kwargs):
         super(LcSpider, self).__init__(*args, **kwargs)
-        self.urls = ['http://www.mytheresa.com/en-us/printed-cotton-maxi-dress-616842.html']
+        self.urls = urls
 
     def start_requests(self):
         # What we want is an item in English and its Chinese translation which
@@ -75,19 +75,24 @@ class LcSpider(scrapy.Spider):
             text_css = rule['text_css']
             self.add_text_css(pl, text_css)
 
-        # Get photo urls, some urls are in the javascript or JSON data which
-        # need to be found by re.
+        # Get photo urls.
         photo_urls_css = rule['photo_urls_css']
+        # Some urls are in the javascript or JSON data, we need `re`.
         try:
             photo_urls = response.css(photo_urls_css).re(rule['photo_urls_re'])
         except KeyError as e:
             photo_urls = response.css(photo_urls_css).extract()
+        # In some cases, we should get a way to calculate the HD photo URLs by
+        # small photo URLs which only can be found in the source codes.
         try:
-            photo_urls = [rule['photo_urls_get_hd'](url) for url in photo_urls]
+            photo_urls = rule['handle_photo_urls'](photo_urls)
         except KeyError as e:
             pass
         finally:
-            pl.add_value('photo_urls', photo_urls)
+            # Handle repetition and keep the original order.
+            final_photo_urls = list(set(photo_urls))
+            final_photo_urls.sort(key=photo_urls.index)
+            pl.add_value('photo_urls', final_photo_urls)
 
         logger.info(pl.load_item())
         return pl.load_item()
@@ -101,7 +106,11 @@ class LcSpider(scrapy.Spider):
 
     def add_text_css(self, pl, css_dict):
         for field, css in css_dict.items():
-            pl.add_css(field, css)
+            if css:
+                pl.add_css(field, css)
+            else:
+                # It could be no title, no description or no details.
+                pl.add_value(field, u'<NO %s>' % field.upper())
 
     def parse_other_color(self, response):
         # Some pages has more than one color so that we should make another request.

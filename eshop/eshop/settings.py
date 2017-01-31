@@ -23,7 +23,7 @@ BOT_NAME = 'eshop'
 SPIDER_MODULES = ['eshop.spiders']
 NEWSPIDER_MODULE = 'eshop.spiders'
 
-COOKIES_ENABLED=True
+COOKIES_ENABLED = False
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'eshop (+http://www.yourdomain.com)'

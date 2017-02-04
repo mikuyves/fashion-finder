@@ -37,7 +37,7 @@ class CheckItemPipeline(object):
         for url in photo_urls:
             parsed_url = urlparse(url)
             if parsed_url.scheme and parsed_url.netloc:
-                return
+                pass
             elif not parsed_url.scheme and not parsed_url.netloc:
                 url = parsed_url._replace(**{'scheme': scheme, 'netloc': netloc}).geturl()
             elif not parsed_url.scheme:

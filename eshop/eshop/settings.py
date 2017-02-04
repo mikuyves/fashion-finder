@@ -23,13 +23,13 @@ BOT_NAME = 'eshop'
 SPIDER_MODULES = ['eshop.spiders']
 NEWSPIDER_MODULE = 'eshop.spiders'
 
-COOKIES_ENABLED = False
+COOKIES_ENABLED = True
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'eshop (+http://www.yourdomain.com)'
 
 # Obey robots.txt rules
-ROBOTSTXT_OBEY = True
+ROBOTSTXT_OBEY = False
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 #CONCURRENT_REQUESTS = 32
@@ -65,9 +65,9 @@ DOWNLOAD_DELAY = 5
 # See http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
 DOWNLOADER_MIDDLEWARES = {
     'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None,
-    'eshop.middlewares.RotateUserAgentMiddleware': 1,
+    'eshop.middlewares.RotateUserAgentMiddleware': 2,
 #    'eshop.middlewares.RandomUserAgent': 1,
-#    'eshop.middlewares.ProxyMiddleware': 2,
+    'eshop.middlewares.ProxyMiddleware': 1,
 #    'eshop.middlewares.MyCustomDownloaderMiddleware': 543,
 }
 

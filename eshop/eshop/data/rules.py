@@ -149,8 +149,52 @@ var span_price = $('#sp_span_price');
 var price_text = span_price.text();
 var minus_index = price_text.indexOf('-')
 if (minus_index != -1){
-price_text.replace(price_text.slice(minus_index), '');
-$('#sp_span_discountedprice').remove();
+    price_text.replace(price_text.slice(minus_index), '');
+    $('#sp_span_discountedprice').remove();
 }''',
     },
+
+    'www.matchesfashion.com': {
+        'has_zh_maybe': False,
+        'type': 'Retailer',
+        'brand': 'h1 a::text',
+        'text_css': {
+            'title': 'h1 span::text',
+            'desc': '.scroller-content p::text',
+            'details': '.inner-content li::text',
+        },
+        'photo_urls_css': '.gallery-panel__main-image-carousel img::attr(src)',
+        'screenshot_js': '''$('.mfp-wrap').remove();
+$('.mfp-bg').remove();
+window.scrollBy(0, 174);
+if ($('.pdp-price__hilite').length != 0){
+    var price_text = $('strike:eq(0)').text();
+    $('.pdp-price').text(price_text);
 }
+''',
+    },
+}
+
+
+###############################################################################
+############################ Rules with problems ##############################
+#
+# neimanmarcus.com will banned your IP and redirect to a url that let you to
+# input CAPCHA. We can change IP by middlewares, but there is still something
+# wrong with `photo_urls_css`, `brand` and get a screenshot by selenium.
+#    'www.neimanmarcus.com': {
+#        'has_zh_maybe': False,
+#        'type': 'Retailer',
+#        'brand': 'span[itemprop=brand]::text, span[itemprop=brand] a::text',
+#        'text_css': {
+#            'title': 'span[itemprop=name]::text',
+#            'desc': None,
+#            'details': 'div[itemprop=description] li::text',
+#        },
+#        'photo_urls_css': 'img[itemprop=image]::attr(data-zoom-url)',
+#        'screenshot_js': '''window.scrollBy(0, 150);
+#$('.item-label').remove();
+#$('ins.sale-text').remove();
+#$('.tooltipHolder').remove();
+#''',
+#    },

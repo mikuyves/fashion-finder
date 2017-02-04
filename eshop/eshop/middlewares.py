@@ -69,14 +69,14 @@ https://github.com/yidao620c/core-scrapy/blob/master/coolscrapy/middlewares.py
     ]
 
 
-#class ProxyMiddleware(object):
-#    def process_request(self, request, spider):
-#        proxy = random.choice(PROXIES)
-#        if proxy['user_pass'] is not None:
-#            request.meta['proxy'] = "http://%s" % proxy['ip_port']
-#            encoded_user_pass = base64.encodestring(proxy['user_pass'])
-#            request.headers['Proxy-Authorization'] = 'Basic ' + encoded_user_pass
-#            print "**************ProxyMiddleware have pass************" + proxy['ip_port']
-#        else:
-#            print "**************ProxyMiddleware no pass************" + proxy['ip_port']
-#            request.meta['proxy'] = "http://%s" % proxy['ip_port']
+PROXIES = [
+    '12.129.82.194:8080',
+    '144.217.115.70:8080',
+]
+
+
+class ProxyMiddleware(object):
+    def process_request(self, request, spider):
+        proxy = random.choice(PROXIES)
+        print "**************ProxyMiddleware no pass************" + proxy
+        request.meta['proxy'] = "http://%s" % proxy

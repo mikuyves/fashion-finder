@@ -161,7 +161,7 @@ if (minus_index != -1){
         'text_css': {
             'title': 'h1 span::text',
             'desc': '.scroller-content p::text',
-            'details': '.inner-content li::text',
+            'details': None,
         },
         'photo_urls_css': '.gallery-panel__main-image-carousel img::attr(src)',
         'screenshot_js': '''$('.mfp-wrap').remove();
@@ -171,6 +171,20 @@ if ($('.pdp-price__hilite').length != 0){
     var price_text = $('strike:eq(0)').text();
     $('.pdp-price').text(price_text);
 }
+''',
+    },
+
+    'www.ssense.com': {
+        'has_zh_maybe': False,
+        'type': 'Retailer',
+        'brand': 'h1 a::text',
+        'text_css': {
+            'title': 'h2::text',
+            'desc': '.product-description-text::text',
+            'details': '.inner-content li::text',
+        },
+        'photo_urls_css': '.image-wrapper img::attr(data-src)',
+        'screenshot_js': '''
 ''',
     },
 }

@@ -65,9 +65,9 @@ DOWNLOAD_DELAY = 5
 # See http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
 DOWNLOADER_MIDDLEWARES = {
     'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None,
-    'eshop.middlewares.RotateUserAgentMiddleware': 2,
+    'eshop.middlewares.RotateUserAgentMiddleware': 20,
 #    'eshop.middlewares.RandomUserAgent': 1,
-    'eshop.middlewares.ProxyMiddleware': 1,
+    'eshop.middlewares.ProxyMiddleware': 10,
 #    'eshop.middlewares.MyCustomDownloaderMiddleware': 543,
 }
 

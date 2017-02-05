@@ -70,13 +70,18 @@ https://github.com/yidao620c/core-scrapy/blob/master/coolscrapy/middlewares.py
 
 
 PROXIES = [
-    '12.129.82.194:8080',
-    '144.217.115.70:8080',
+    '144.217.191.147:80',
+    '144.217.191.147:8080',
+    '144.217.191.147:8080',
 ]
 
 
 class ProxyMiddleware(object):
     def process_request(self, request, spider):
-        proxy = random.choice(PROXIES)
-        print "**************ProxyMiddleware no pass************" + proxy
-        request.meta['proxy'] = "http://%s" % proxy
+        try:
+            request.meta['rule']['proxy']
+            proxy = random.choice(PROXIES)
+            print "{0:*>50} => {1:*<50}".format('ProxyMiddleware', proxy)
+            request.meta['proxy'] = "http://%s" % proxy
+        except KeyError as e:
+            pass

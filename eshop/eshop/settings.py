@@ -66,10 +66,13 @@ DOWNLOAD_DELAY = 5
 DOWNLOADER_MIDDLEWARES = {
     'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None,
     'eshop.middlewares.RotateUserAgentMiddleware': 20,
+#    'eshop.middlewares.GoogleCacheMiddleware': 30,
 #    'eshop.middlewares.RandomUserAgent': 1,
     'eshop.middlewares.ProxyMiddleware': 10,
 #    'eshop.middlewares.MyCustomDownloaderMiddleware': 543,
 }
+
+GOOGLE_CACHE_DOMAINS = ['www.lyst.com']
 
 # Enable or disable extensions
 # See http://scrapy.readthedocs.org/en/latest/topics/extensions.html

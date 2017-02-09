@@ -187,6 +187,67 @@ if ($('.pdp-price__hilite').length != 0){
         'screenshot_js': '''
 ''',
     },
+
+    'www.lyst.com': {
+        'has_zh_maybe': False,
+        'type': 'Pool',
+        'brand': 'h1 div[itemprop=brand] a::text, h3 span[itemprop=brand] a::text',
+        'text_css': {
+            'title': 'h1 div[itemprop=name]::text, h1 span[itemprop=name]::text',
+            'desc': 'div[itemprop=description] p::text',
+            'details': None,
+        },
+        'photo_urls_css': '.image-gallery-thumbnail::attr(data-full-image-url), .image-gallery__carousel__scroll-wrapper__image a::attr(href)',
+        'screenshot_js': '''
+''',
+    },
+
+    'www.shopsplash.com': {
+        'has_zh_maybe': False,
+        'type': 'Official',
+        'brand': u'Alexis',
+        'text_css': {
+            'title': 'h1[itemprop=name]::text',
+            'desc': 'div.into::text',
+            'details': None,
+        },
+        'photo_urls_css': 'a.cloud-zoom-gallery::attr(href)',
+        'screenshot_js': '''
+''',
+    },
+
+    'www.stellamccartney.com': {
+        'has_zh_maybe': False,
+        'type': 'Official',
+        'brand': u'Stella Mccartney',
+        'text_css': {
+            'title': 'h1.title span::text',
+            'desc': '.contentDesc .editorialdescription .value::text',
+            'details': '.contentDesc .details .value::text',
+        },
+        'photo_urls_css': 'img::attr(srcset)',
+        'photo_urls_re': r',(\S+) 1920w',
+        'screenshot_js': '''
+''',
+    },
+
+    'www.neimanmarcus.com': {
+        'has_zh_maybe': False,
+        'type': 'Retailer',
+        'proxy': True,
+        'brand': 'span[itemprop=brand]::text, span[itemprop=brand] a::text',
+        'text_css': {
+            'title': 'span[itemprop=name]::text',
+            'desc': None,
+            'details': 'div[itemprop=description] li::text',
+        },
+        'photo_urls_css': 'img[itemprop=image]::attr(data-zoom-url)',
+        'screenshot_js': '''window.scrollBy(0, 150);
+$('.item-label').remove();
+$('ins.sale-text').remove();
+$('.tooltipHolder').remove();
+''',
+    },
 }
 
 

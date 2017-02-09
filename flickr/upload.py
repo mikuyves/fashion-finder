@@ -169,3 +169,8 @@ class MyFlickr(object):
         if photosets_dict:
             with open('flickr_photosets.json', 'wb') as f:
                 f.write(json.dumps(photosets_dict))
+
+
+if __name__ == '__main__':
+    f = MyFlickr()
+    f.start_upload()

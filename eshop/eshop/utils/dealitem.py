@@ -136,11 +136,6 @@ class ItemMixer(object):
                         else:
                             logger.warning('%s --> MISSED!' % photo_url)
 
-            # Save the screenshot of the item for showing the regular price.
-            print 'Getting a screenshot...'
-            get_screenshot(item['url'], filepath, item['website'])
-            print 'Done.'
-
             # Make a file for flickr uploading.
             with open(folderpath + '/ready_to_upload.flk', 'w') as f:
                 f.write(flickr_headline.encode('utf8'))
@@ -149,3 +144,8 @@ class ItemMixer(object):
             with open(folderpath + '/item_data.json', 'wb') as f:
                 data = json.dumps(item)
                 f.write(data)
+
+            # Save the screenshot of the item for showing the regular price.
+            print 'Getting a screenshot...'
+            get_screenshot(item['url'], filepath, item['website'])
+            print 'Done.'

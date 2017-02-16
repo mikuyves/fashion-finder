@@ -170,8 +170,7 @@ window.scrollBy(0, 174);
 if ($('.pdp-price__hilite').length != 0){
     var price_text = $('strike:eq(0)').text();
     $('.pdp-price').text(price_text);
-}
-''',
+}''',
     },
 
     'www.ssense.com': {
@@ -184,8 +183,7 @@ if ($('.pdp-price__hilite').length != 0){
             'details': '.inner-content li::text',
         },
         'photo_urls_css': '.image-wrapper img::attr(data-src)',
-        'screenshot_js': '''
-''',
+        'screenshot_js': ''';''',
     },
 
     'www.lyst.com': {
@@ -198,8 +196,7 @@ if ($('.pdp-price__hilite').length != 0){
             'details': None,
         },
         'photo_urls_css': '.image-gallery-thumbnail::attr(data-full-image-url), .image-gallery__carousel__scroll-wrapper__image a::attr(href)',
-        'screenshot_js': '''
-''',
+        'screenshot_js': ''';''',
     },
 
     'www.shopsplash.com': {
@@ -212,8 +209,7 @@ if ($('.pdp-price__hilite').length != 0){
             'details': None,
         },
         'photo_urls_css': 'a.cloud-zoom-gallery::attr(href)',
-        'screenshot_js': '''
-''',
+        'screenshot_js': ''';''',
     },
 
     'www.stellamccartney.com': {
@@ -227,8 +223,7 @@ if ($('.pdp-price__hilite').length != 0){
         },
         'photo_urls_css': 'img::attr(srcset)',
         'photo_urls_re': r',(\S+) 1920w',
-        'screenshot_js': '''
-''',
+        'screenshot_js': ''';''',
     },
 
     'www.neimanmarcus.com': {
@@ -242,14 +237,180 @@ if ($('.pdp-price__hilite').length != 0){
             'details': 'div[itemprop=description] li::text',
         },
         'photo_urls_css': 'img[itemprop=image]::attr(data-zoom-url)',
-        'screenshot_js': '''window.scrollBy(0, 150);
-$('.item-label').remove();
-$('ins.sale-text').remove();
-$('.tooltipHolder').remove();
-''',
+        'screenshot_js': '''window.scrollBy(0, 150);''',
+    },
+
+    'www.fwrd.com': {
+        'has_zh_maybe': False,
+        'type': 'Retailer',
+        'brand': '.designer_brand::text',
+        'text_css': {
+            'title': '.product_name::text',
+            'desc': None,
+            'details': '.product_detail li::text',
+        },
+        'photo_urls_css': '.product_z img::attr(src)',
+        'screenshot_js': '''window.scrollBy(0, 50);''',
+    },
+
+    'www.madstyle.com.au': {
+        'has_zh_maybe': False,
+        'type': 'Official',
+        'brand': u'MAD STYLE',
+        'text_css': {
+            'title': 'h1::text',
+            'desc': None,
+            'details': '.std::text',
+        },
+        'photo_urls_css': '.gallery-image::attr(data-zoom-image)',
+        'screenshot_js': '''window.scrollBy(0, 50);''',
+    },
+
+    'www.theoutnet.com': {
+        'has_zh_maybe': False,
+        'type': 'Retailer',
+        'brand': 'h1 a::text',
+        'text_css': {
+            'title': 'h1 span::text',
+            'desc': None,
+            'details': '.accordion-content li::text',
+        },
+        'photo_urls_css': '#large-image img::attr(data-src)',
+        'screenshot_js': '''window.scrollBy(0, 100);''',
+    },
+
+    'www.armani.com': {
+        'has_zh_maybe': False,
+        'type': 'Official',
+        'brand': u'ARMANI',
+        'text_css': {
+            'title': 'h1::text',
+            'desc': '.descriptionContent::text',
+            'details': '.descriptionList li::text',
+        },
+        'photo_urls_css': 'img.thumb::attr(src)',
+        'handle_photo_urls': lambda x: [re.sub(r'_13_', '_16_', url) for url in x],
+        'screenshot_js': ''';''',
+    },
+
+    'us.zimmermannwear.com': {
+        'has_zh_maybe': False,
+        'type': 'Official',
+        'brand': u'ZIMMERMANN',
+        'text_css': {
+            'title': 'h1::text',
+            'desc': 'p.itemDesc::text',
+            'details': '.small p::text',
+        },
+        'photo_urls_css': '.showmainImg::attr(data-fullimg)',
+        'screenshot_js': '''window.scrollBy(0, 100);''',
+    },
+
+    'www.stylebop.com': {
+        'has_zh_maybe': False,
+        'type': 'Retailer',
+        'brand': '.h1 a::text',
+        'text_css': {
+            'title': 'h1.h2::text',
+            'desc': '.desc-content li::text',
+            'details': None,
+        },
+        'photo_urls_css': 'img::attr(data-zoom-image)',
+        'screenshot_js': '''window.scrollBy(0, 300);''',
+    },
+
+    'www.tedbaker.com': {
+        'has_zh_maybe': False,
+        'type': 'Official',
+        'brand': u'TED BAKER',
+        'text_css': {
+            'title': 'h2.summary::text',
+            'desc': '.description::text',
+            'details': '#product_details li::text',
+        },
+        'photo_urls_css': '.pdp_main_slider img::attr(ng-src)',
+        'screenshot_js': ''';''',
+    },
+
+    'www.kenzo.com': {
+        'has_zh_maybe': False,
+        'type': 'Official',
+        'brand': u'KENZO',
+        'text_css': {
+            'title': 'h1::text',
+            'desc': '.kz-pp-fiche-desc div::text',
+            'details': '.kz-pp-fiche-compo p::text',
+        },
+        'photo_urls_css': '.kz-pp-image img::attr(src)',
+        'screenshot_js': ''';''',
+    },
+
+    'cn.sportmax.com': {
+        'has_zh_maybe': False,
+        'type': 'Official',
+        'brand': u'SPORTMAX',
+        'text_css': {
+            'title': '.c-product-data .h3-like::text',
+            'desc': '.description::text',
+            'details': 'li::text',
+        },
+        'photo_urls_css': 'a::attr(data-zoom)',
+        'screenshot_js': '''window.scrollBy(0, 220);''',
+    },
+
+    'www.melijoe.com': {
+        'has_zh_maybe': False,
+        'type': 'Retailer',
+        'brand': 'a[itemprop=brand]::text',
+        'text_css': {
+            'title': 'h1::text',
+            'desc': None,
+            'details': '.detail-bloc-item .value::text',
+        },
+        'photo_urls_css': '.swiper-slide::attr(data-zoom)',
+        'screenshot_js': '''window.scrollBy(0, 100);''',
+    },
+
+    'www.modaoperandi.com': {
+        'has_zh_maybe': False,
+        'type': 'Retailer',
+        'brand': '.designer_title::text',
+        'text_css': {
+            'title': '.product_title::text',
+            'desc': '.description_text p::text',
+            'details': None,
+        },
+        'photo_urls_css': 'img.primary_image_display::attr(src)',
+        'screenshot_js': '''window.scrollBy(0, 50);''',
+    },
+
+    'www.fashionbarnshop.com': {
+        'has_zh_maybe': False,
+        'type': 'Retailer',
+        'brand': 'h1::text',
+        'text_css': {
+            'title': 'h1::text',
+            'desc': None,
+            'details': '#tabs-1 li::text',
+        },
+        'photo_urls_css': '.slide a::attr(data-zoom-image)',
+        'screenshot_js': '''window.scrollBy(0, 150);''',
+    },
+
+    'www.amazon.com': {
+        'has_zh_maybe': False,
+        'type': 'Retailer',
+        'brand': '#productTitle::text',
+        'text_css': {
+            'title': '#productTitle::text',
+            'desc': None,
+            'details': '#feature-bullets .a-list-item::text',
+        },
+        'photo_urls_css': 'script',
+        'photo_urls_re': 'hiRes":"(\S+)","thumb',
+        'screenshot_js': '''window.scrollBy(0, 200);''',
     },
 }
-
 
 ###############################################################################
 ############################ Rules with problems ##############################

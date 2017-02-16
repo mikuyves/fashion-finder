@@ -170,6 +170,28 @@ class MyFlickr(object):
             with open('flickr_photosets.json', 'wb') as f:
                 f.write(json.dumps(photosets_dict))
 
+    def new_photoset(self):
+        # Remove found photos from photoset named 'NEW'.
+        self.flickr = flickrapi.FlickrAPI(api_key, api_secret, format='parsed-json')
+        new_photoset_id = u'72157676185110872'
+        photos = self.flickr.photosets.getPhotos(photoset_id=new_photoset_id)['photoset']['photo']
+
+        # Remove photos.
+        new_icon_photo_id = u'31597170291'
+        photo_ids = [photo['id'] for photo in photos if photo['id'] != new_icon_photo_id]
+        print 'Removing photos from the NEW photoset...'
+        with progressbar.ProgressBar(
+            max_value=len(photo_ids), redirect_stdout=True
+        ) as bar:
+            for i, photo_id in enumerate(photo_ids, start=1):
+                self.flickr.photosets.removePhoto(photoset_id=new_photoset_id, photo_id=photo_id)
+                bar.update(i)
+
+        # Check whether the NEW photoset is clear.
+        photos = self.flickr.photosets.getPhotos(photoset_id=new_photoset_id)['photoset']['photo']
+        if len(photos) == 1:
+            print 'NEW photoset is clear now.'
+
 
 if __name__ == '__main__':
     f = MyFlickr()

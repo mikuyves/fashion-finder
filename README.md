@@ -2,16 +2,18 @@
 ### Define BASEPATH which is your own work path.
 
 * Define your own BASEPATH in `eshop/utils/dealitem.py` and `flickr/upload.py`.
+```Python
+# Define your own BASEPATH which is a ABS-PATH for saving the data.
+from secret import BASEPATH
 ```
-    # Define your own BASEPATH which is a ABS-PATH for saving the data.
-    from secret import BASEPATH
-```
+
 * Define your own `api_key` and `api_secret` in `flickr/upload.py`.
+```Python
+# Define your own BASEPATH which is the same path as scrapy project.
+# Get your own api_key and api_secret from https://www.flickr.com/services/api/.
+from secret import BASEPATH, api_key, api_secret
 ```
-    # Define your own BASEPATH which is the same path as scrapy project.
-    # Get your own api_key and api_secret from https://www.flickr.com/services/api/.
-    from secret import BASEPATH, api_key, api_secret
-```
+
 * Make a file in the project path to record the urls that you need to crape:
 ```
     fashion-finder$ touch urls.txt
@@ -22,7 +24,7 @@
 1. Put your urls in your urls.txt file, one url in one line.
 2. Start.
 ```
-    fashion-finder$ python eshop/eshop/spiders/main_spider.py
+fashion-finder$ python eshop/eshop/spiders/main_spider.py
 ```
 3. Have fun.
 
@@ -31,15 +33,16 @@
 
 ### Upload
 ```
-    fashion-finder$ python flickr/upload.py
+fashion-finder$ python flickr/upload.py
 ```
 
 ### Clean Photoset
 ```
-    flickr$ ipython
-    > from upload import Myflickr
-    > f = Myflickr()
-    > f.new_photoset()
+flickr$ python
+-------------------------------
+>>> from upload import Myflickr
+>>> f = Myflickr()
+>>> f.new_photoset()
 ```
 
 

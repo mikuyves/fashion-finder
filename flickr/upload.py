@@ -14,9 +14,11 @@ import progressbar
 from IPython import embed
 
 from settings import PROJECT_PATH
-from secret import BASEPATH, api_key, api_secret
 import data
 
+# Define your own BASEPATH which is the same path as scrapy project.
+# Get your own api_key and api_secret from https://www.flickr.com/services/api/.
+from secret import BASEPATH, api_key, api_secret
 
 logging.config.fileConfig(os.path.join(PROJECT_PATH, 'log.conf'))
 logger = logging.getLogger('flickr')

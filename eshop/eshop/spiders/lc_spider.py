@@ -34,12 +34,12 @@ class LcSpider(scrapy.Spider):
             pid = self.get_pid(url)
 
             # Request English website.
-            yield scrapy.Request(url, self.parse, meta={'rule': rule, 'lang': 'en-US', 'pid': pid})
+            yield scrapy.Request(url, self.parse, meta={'rule': rule, 'lang': 'en-US', 'pid': pid}, dont_filter=True)
 
             # Request Chinese website if it could.
             if rule['has_zh_maybe']:
                 url = self.get_url_zh(rule, url)
-                yield scrapy.Request(url, self.parse, meta={'rule': rule, 'lang': 'zh-CN', 'pid': pid})
+                yield scrapy.Request(url, self.parse, meta={'rule': rule, 'lang': 'zh-CN', 'pid': pid}, dont_filter=True)
 
     def parse(self, response):
         # Parse single item no matter which language.

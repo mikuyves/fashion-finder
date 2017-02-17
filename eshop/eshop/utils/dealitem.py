@@ -9,9 +9,11 @@ import requests
 from IPython import embed
 import progressbar
 
-from secret import BASEPATH
 from screenshot import get_screenshot
 
+
+# Define your own BASEPATH which is a ABS-PATH for saving the data.
+from secret import BASEPATH
 
 logger = logging.getLogger(__name__)
 

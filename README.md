@@ -1,7 +1,7 @@
-## BEFORE USE
+## SETTINGS BEFORE USE
 ### Define BASEPATH which is your own work path.
 
-* Define your own BASEPATH in `eshop/utils/dealitem.py` and `flickr/upload.py`.
+* Define your own BASEPATH in `eshop/eshop/utils/dealitem.py` and `flickr/upload.py`.
 ```Python
 # Define your own BASEPATH which is a ABS-PATH for saving the data.
 from secret import BASEPATH
@@ -16,24 +16,25 @@ from secret import BASEPATH, api_key, api_secret
 
 * Make a file in the project path to record the urls that you need to crape:
 ```
-    fashion-finder$ touch urls.txt
+fashion-finder$ touch urls.txt
 ```
 
 ## SCRAPY
 
 1. Put your urls in your urls.txt file, one url in one line.
-2. Start.
+2. Start and have fun.
 ```
-fashion-finder$ python eshop/eshop/spiders/main_spider.py
+fashion-finder$ cd eshop/eshop/spiders/
+eshop$ python main_spider.py
 ```
-3. Have fun.
 
 ## FLICKR
 `flickr` is a module for me to save the data in cloud, you could skip it if you don't want to.
 
 ### Upload
 ```
-fashion-finder$ python flickr/upload.py
+fashion-finder$ cd flickr
+flickr$ python upload.py
 ```
 
 ### Clean Photoset

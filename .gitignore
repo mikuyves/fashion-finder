@@ -90,3 +90,10 @@ ENV/
 
 # Private data
 secret.py
+
+# Log file
+*.log
+*.log.[0-9]
+
+# System file
+.DS_Store

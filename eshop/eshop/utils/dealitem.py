@@ -60,6 +60,10 @@ class ItemMixer(object):
                     item_en['details_zh'] = item_zh['details']
                 except KeyError as e:
                     print 'There is something wrong with the key %s' % e
+                    _key = e.message
+                    _key_zh = '%s_zh' % e.message
+                    item_en[_key] = ''
+                    item_en[_key_zh] = ''
                 finally:
                     items.append(item_en)
 

@@ -119,24 +119,23 @@ class MyFlickr(object):
         photos = recent_photos_data[u'photos'][u'photo']
 
         print 'Start to add the latest upload photos to the photoset...\n'
-        for photo in photos:
-            with open('flickr_photosets.json') as f:
-                photosets = json.loads(f.read())
+        with progressbar.ProgressBar(
+            max_value=len(photos), redirect_stdout=True
+        ) as bar:
+            for i, photo in enumerate(photos, start=1):
+                with open('flickr_photosets.json') as f:
+                    photosets = json.loads(f.read())
 
-            # ' - ' is the rule that names headline.
-            brand = photo[u'title'].split(' - ')[0].upper()
-            photo_id = photo[u'id']
-
-            print photo['title']
-            target_photosets = [brand, 'FOUND', date_photoset]
-            with progressbar.ProgressBar(
-                max_value=len(target_photosets), redirect_stdout=True
-            ) as bar:
-
-                for i, photoset in enumerate(target_photosets, start=1):
+                # ' - ' is the rule that names headline.
+                brand = photo[u'title'].split(' - ')[0].upper()
+                photo_id = photo[u'id']
+                print photo[u'title'].encode('utf8')
+                target_photosets = [brand, 'FOUND', date_photoset]
+                for photoset in target_photosets:
                     self.add_photo(photo, photo_id, photosets, photoset)
                     print '--> %s OK.' % photoset.encode('utf-8')
-                    bar.update(i)
+
+                bar.update(i)
 
     def add_photo(self, photo, photo_id, photosets, photoset):
         if photoset not in photosets:

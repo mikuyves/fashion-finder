@@ -102,12 +102,7 @@ if ($(".originalRetailPrice").length != 0){
         },
         'photo_urls_css': '.gallery-image::attr(src)',
         'handle_photo_urls': lambda x: [re.sub(r'/1088/1088/66/', u'/2176/2176/90/', url) for url in x],
-        'screenshot_js': '''window.scrollBy(0, 240);
-var price = document.getElementsByClassName('old-price')[0].childNodes[1].innerHTML;
-var info = document.getElementsByClassName('price-info')[0];
-info.innerHTML = '';
-info.appendChild(document.createTextNode(price));
-''',
+        'screenshot_js': '''window.scrollBy(0, 240);''',
     },
 
     'us.burberry.com': {
@@ -180,7 +175,7 @@ if ($('.pdp-price__hilite').length != 0){
         'text_css': {
             'title': 'h2::text',
             'desc': '.product-description-text::text',
-            'details': '.inner-content li::text',
+            'details': None,
         },
         'photo_urls_css': '.image-wrapper img::attr(data-src)',
         'screenshot_js': ''';''',
@@ -229,7 +224,6 @@ if ($('.pdp-price__hilite').length != 0){
     'www.neimanmarcus.com': {
         'has_zh_maybe': False,
         'type': 'Retailer',
-        'proxy': True,
         'brand': 'span[itemprop=brand]::text, span[itemprop=brand] a::text',
         'text_css': {
             'title': 'span[itemprop=name]::text',
@@ -276,7 +270,7 @@ if ($('.pdp-price__hilite').length != 0){
             'details': '.accordion-content li::text',
         },
         'photo_urls_css': '#large-image img::attr(data-src)',
-        'screenshot_js': '''window.scrollBy(0, 100);''',
+        'screenshot_js': ''';''',
     },
 
     'www.armani.com': {
@@ -409,6 +403,282 @@ if ($('.pdp-price__hilite').length != 0){
         'photo_urls_css': 'script',
         'photo_urls_re': 'hiRes":"(\S+)","thumb',
         'screenshot_js': '''window.scrollBy(0, 200);''',
+    },
+
+    'www.aliceandolivia.com': {
+        'has_zh_maybe': False,
+        'type': 'Official',
+        'brand': u'ALICE AND OLIVIA',
+        'text_css': {
+            'title': 'h1::text',
+            'desc': '.box p font span::text',
+            'details': 'li.MsoNormal span::text',
+        },
+        'photo_urls_css': '.slide img::attr(src)',
+        'screenshot_js': ''';''',
+    },
+
+    'www.gucci.com': {
+        'has_zh_maybe': False,
+        'type': 'Official',
+        'brand': u'GUCCI',
+        'text_css': {
+            'title': 'h1::text',
+            'desc': '.product-detail p::text',
+            'details': '.product-detail li::text',
+        },
+        'photo_urls_css': 'img.item-content::attr(data-src_standard_retina)',
+        'screenshot_js': ''';''',
+    },
+
+    'www.selfridges.com': {
+        'has_zh_maybe': False,
+        'type': 'Retailer',
+        'brand': 'h1 .brand a::text',
+        'text_css': {
+            'title': 'h1 .description::text',
+            'desc': 'p[itemprop=description]::text',
+            'details': '.productDetails script::text',
+        },
+        'photo_urls_css': 'img[itemprop=image]::attr(src)',
+        'screenshot_js': '''window.scrollBy(0, 200);''',
+    },
+
+    'us.sandro-paris.com': {
+        'has_zh_maybe': False,
+        'type': 'Official',
+        'brand': u'SANDRO',
+        'text_css': {
+            'title': 'h1::text',
+            'desc': None,
+            'details': 'h2.detaildesc::text',
+        },
+        'photo_urls_css': '.productlargeimgdata::attr(data-lgimg)',
+        'handle_photo_urls': lambda x: x[0].split('|'),
+        'screenshot_js': ''';''',
+    },
+
+    'www.dereklam.com': {
+        'has_zh_maybe': False,
+        'type': 'Official',
+        'brand': u'DEREK LAM',
+        'text_css': {
+            'title': 'h1::text',
+            'desc': None,
+            'details': '.os-product-description li::text',
+        },
+        'photo_urls_css': 'script',
+        'photo_urls_re': '''"ImageUrl":"(\S+)","ImageThumbUrl"''',
+        'screenshot_js': ''';''',
+    },
+
+    'www.tibi.com': {
+        'has_zh_maybe': False,
+        'type': 'Official',
+        'brand': u'TIBI',
+        'text_css': {
+            'title': 'h1::text',
+            'desc': '.std p::text',
+            'details': '.std li::text',
+        },
+        'photo_urls_css': 'img.gallery-image::attr(data-zoom-image)',
+        'screenshot_js': ''';''',
+    },
+
+    'www.flannels.com': {
+        'has_zh_maybe': False,
+        'type': 'Retailer',
+        'brand': '#ProductName::text',
+        'text_css': {
+            'title': '#ProductName::text',
+            'desc': 'span[itemprop=description] p::text',
+            'details': 'span[itemprop=description] li::text',
+        },
+        'photo_urls_css': '#piThumbList a::attr(href)',
+        'handler_photo_urls': lambda x: [re.sub(r'_l_', '_xxl_', url) for url in x],
+        'screenshot_js': ''';''',
+    },
+
+    'www.bluefly.com': {
+        'has_zh_maybe': False,
+        'type': 'Retailer',
+        'brand': 'p[itemprop=brand] a::text',
+        'text_css': {
+            'title': 'title::text',
+            'desc': 'div[itemprop=description]::text',
+            'details': 'ul[data-ui=accordion-content] li::text',
+        },
+        'photo_urls_css': 'a::attr(data-zoom-image)',
+        'screenshot_js': ''';''',
+    },
+
+    'www.tadashishoji.com': {
+        'has_zh_maybe': False,
+        'type': 'Official',
+        'brand': u'TADASHI SHOJI',
+        'text_css': {
+            'title': 'h1::text',
+            'desc': '.inner::text',
+            'details': '.inner li::text',
+        },
+        'photo_urls_css': 'a::attr(data-zoom-image)',
+        'screenshot_js': ''';''',
+    },
+
+    'www.montaignemarket.com': {
+        'has_zh_maybe': False,
+        'type': 'Retailer',
+        'brand': 'small.pr_brand a[itemprop=brand]::text',
+        'text_css': {
+            'title': 'h1::text',
+            'desc': 'span[itemprop=description] p::text',
+            'details': None,
+        },
+        'photo_urls_css': 'img[itemprop=image]::attr(src)',
+        'screenshot_js': ''';''',
+    },
+
+    'www.vincecamuto.com': {
+        'has_zh_maybe': False,
+        'type': 'Official',
+        'brand': u'VINCE CAMUTO',
+        'text_css': {
+            'title': 'h1::text',
+            'desc': '.product-tabs::text',
+            'details': '.product-tabs li::text',
+        },
+        'photo_urls_css': 'li img::attr(src)',
+        'screenshot_js': ''';''',
+    },
+
+    'www.bottegaveneta.com': {
+        'has_zh_maybe': False,
+        'type': 'Official',
+        'brand': u'BOTTEGA VENETA',
+        'text_css': {
+            'title': '.inner.modelName::text',
+            'desc': None,
+            'details': '.tab-body .value::text',
+        },
+        'photo_urls_css': 'img[itemprop=image]::attr(src)',
+        'photo_urls_re': '\S+.jpg$',
+        'handle_photo_urls': lambda x: [re.sub(r'_7_', '_15_', url) for url in x],
+        'screenshot_js': ''';''',
+    },
+
+    'www.johnlewis.com': {
+        'has_zh_maybe': False,
+        'type': 'Retailer',
+        'brand': '.mod a img::attr(title)',
+        'text_css': {
+            'title': 'h1 span::text',
+            'desc': 'span[itemprop=description] p::text',
+            'details': 'dd::text',
+        },
+        'photo_urls_css': 'img::attr(src)',
+        'photo_urls_re': '\S+_main\$$',
+        'handle_photo_urls': lambda x: [re.sub(r'_main', '_lrg', url) for url in x],
+        'screenshot_js': ''';''',
+    },
+
+    'www.harrods.com': {
+        'has_zh_maybe': False,
+        'type': 'Retailer',
+        'brand': 'h1 .brand::text',
+        'text_css': {
+            'title': '.productname::text',
+            'desc': '.description::text',
+            'details': '#details li::text',
+        },
+        'photo_urls_css': 'img::attr(src)',
+        'photo_urls_re': '\S+\$thumbnail\$$',
+        'handle_photo_urls': lambda x: [re.sub(r'thumbnail', 'fullScreen', url) for url in x],
+        'screenshot_js': ''';''',
+    },
+
+    'www.zadig-et-voltaire.com': {
+        'has_zh_maybe': False,
+        'type': 'Official',
+        'brand': u'ZADIG ET VOLTAIRE',
+        'text_css': {
+            'title': 'h1::text',
+            'desc': '.short-description p::text',
+            'details': None,
+        },
+        'photo_urls_css': 'img::attr(src)',
+        'photo_urls_re': '\S+530x795\S+',
+        'handle_photo_urls': lambda x: [re.sub(r'\/530x795', '', url) for url in x],
+        'screenshot_js': ''';''',
+    },
+
+    'intl.aritzia.com': {
+        'has_zh_maybe': False,
+        'type': 'Official',
+        'brand': u'ARITZIA',
+        'text_css': {
+            'title': 'h1::text',
+            'desc': '.pdp-tab-content p::text',
+            'details': '.pdp-tab-content li::text',
+        },
+        'photo_urls_css': 'img::attr(src)',
+        'photo_urls_re': '\S+thumbnail\S+',
+        'handle_photo_urls': lambda x: [re.sub(r'thumbnail', 'large', url) for url in x],
+        'screenshot_js': ''';''',
+    },
+
+    'www.mcq.com': {
+        'has_zh_maybe': False,
+        'type': 'Official',
+        'brand': u'MCQ',
+        'text_css': {
+            'title': 'h1 span::text',
+            'desc': '.descriptions .value::text',
+            'details': '.compositionInfo .text::text',
+        },
+        'photo_urls_css': 'img::attr(srcset)',
+        'photo_urls_re': ',(\S+) 2x$',
+        'screenshot_js': ''';''',
+    },
+
+    'shop.nordstrom.com': {
+        'has_zh_maybe': False,
+        'type': 'Retailer',
+        'brand': 'h2 span::text',
+        'text_css': {
+            'title': 'h1::text',
+            'desc': 'div[itemprop=description] p::text',
+            'details': 'li::text',
+        },
+        'photo_urls_css': 'img::attr(src)',
+        'photo_urls_re': '(\S+Zoom\S+.jpg)\?\S+',
+        'screenshot_js': ''';''',
+    },
+
+    'us.maje.com': {
+        'has_zh_maybe': False,
+        'type': 'Official',
+        'brand': u'MAJE',
+        'text_css': {
+            'title': 'h1 span::text',
+            'desc': '.tabs-content p::text',
+            'details': '.tabs-content span::text',
+        },
+        'photo_urls_css': 'img::attr(src)',
+        'photo_urls_re': '(\S+.jpg)\?\S+',
+        'screenshot_js': ''';''',
+    },
+
+    'www.ministryofstyle.com.au': {
+        'has_zh_maybe': False,
+        'type': 'Official',
+        'brand': u'MINISTRY OF STYLE',
+        'text_css': {
+            'title': '.styledetails h2::text',
+            'desc': '.description::text',
+            'details': None,
+        },
+        'photo_urls_css': 'a::attr(zoom)',
+        'screenshot_js': ''';''',
     },
 }
 

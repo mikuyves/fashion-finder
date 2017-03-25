@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
+import re
 
 
 # Define your own BASEPATH which is a ABS-PATH for saving the data.
@@ -7,7 +8,7 @@ from secret import BASEPATH
 
 
 flickr_headline = raw_input('Enter flickr headline: ')
-base_filename = flickr_headline.replace(' ', '_')
+base_filename = re.sub(r'[/\ ,]', '_', flickr_headline)
 
 folderpath = os.path.join(BASEPATH, base_filename)
 os.mkdir(folderpath)

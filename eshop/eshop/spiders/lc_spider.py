@@ -30,7 +30,13 @@ class LcSpider(scrapy.Spider):
         # website. `rule` here is the hostname which is the key in `website_rules`.
 
         for url in self.urls:
-            rule = website_rules[urlparse(url).hostname]
+            try:
+                print url
+                print urlparse(url).hostname
+                rule = website_rules[urlparse(url).hostname]
+            except KeyError as e:
+                print 'No rule of this website: %s' % e
+                continue
             pid = self.get_pid(url)
 
             # Request English website.

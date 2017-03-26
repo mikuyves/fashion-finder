@@ -194,6 +194,19 @@ if ($('.pdp-price__hilite').length != 0){
         'screenshot_js': ''';''',
     },
 
+    'www.lyst.ca': {
+        'has_zh_maybe': False,
+        'type': 'Pool',
+        'brand': 'h1 div[itemprop=brand] a::text, h3 span[itemprop=brand] a::text',
+        'text_css': {
+            'title': 'h1 div[itemprop=name]::text, h1 span[itemprop=name]::text',
+            'desc': 'div[itemprop=description] p::text',
+            'details': None,
+        },
+        'photo_urls_css': '.image-gallery-thumbnail::attr(data-full-image-url), .image-gallery__carousel__scroll-wrapper__image a::attr(href)',
+        'screenshot_js': ''';''',
+    },
+
     'www.shopsplash.com': {
         'has_zh_maybe': False,
         'type': 'Official',
@@ -678,6 +691,102 @@ if ($('.pdp-price__hilite').length != 0){
             'details': None,
         },
         'photo_urls_css': 'a::attr(zoom)',
+        'screenshot_js': ''';''',
+    },
+
+    'www.bally.com': {
+        'has_zh_maybe': False,
+        'type': 'Official',
+        'brand': u'BALLY',
+        'text_css': {
+            'title': 'h1::text',
+            'desc': '#tab1 p::text',
+            'details': '#tab2 p::text',
+        },
+        'photo_urls_css': 'img[itemprop=image]::attr(src)',
+        'photo_urls_re': '(\S+.jpg)\?',
+        'screenshot_js': ''';''',
+    },
+
+    'www.katespade.com': {
+        'has_zh_maybe': False,
+        'type': 'Official',
+        'brand': u'KATE SPADE',
+        'text_css': {
+            'title': 'h1::text',
+            'desc': '#small-details::text',
+            'details': '#small-description li::text',
+        },
+        'photo_urls_css': 'img::attr(data-cloudzoom)',
+        'photo_urls_re': "image: '(\S+)'",
+        'screenshot_js': ''';''',
+    },
+
+    'www.bcbg.com': {
+        'has_zh_maybe': False,
+        'type': 'Official',
+        'brand': u'BCBG',
+        'text_css': {
+            'title': 'h1::text',
+            'desc': '#tab2 p::text',
+            'details': '#tab2 li::text',
+        },
+        'photo_urls_css': 'img[itemprop]::attr(src)',
+        'screenshot_js': ''';''',
+    },
+
+    'www.miumiu.com': {
+        'has_zh_maybe': False,
+        'type': 'Official',
+        'brand': u'MIU MIU',
+        'text_css': {
+            'title': 'h2::text',
+            'desc': 'p.desc::text',
+            'details': None,
+        },
+        'photo_urls_css': 'a::attr(data-zoom)',
+        'screenshot_js': ''';''',
+    },
+
+    'www.equipmentfr.com': {
+        'has_zh_maybe': False,
+        'type': 'Official',
+        'brand': u'EQUIPMENT',
+        'text_css': {
+            'title': 'span[itemprop=name]::text',
+            'desc': 'span.desc::text',
+            'details': '.product-description li::text',
+        },
+        'photo_urls_css': 'img::attr(src)',
+        'photo_urls_re': '\S+633x\S+.jpg$',
+        'screenshot_js': ''';''',
+    },
+
+    'www.moschino.com': {
+        'has_zh_maybe': False,
+        'type': 'Official',
+        'brand': u'MOSCHINO',
+        'text_css': {
+            'title': 'h1 span::text',
+            'desc': '#tab-body p::text',
+            'details': '#tab-body span::text',
+        },
+        'photo_urls_css': 'img::attr(src)',
+        'photo_urls_re': '\S+_13_\w\.jpg',
+        'handle_photo_urls': lambda x: [re.sub(r'_13_', '_14_', url) for url in x],
+        'screenshot_js': ''';''',
+    },
+
+    'www.revolve.com': {
+        'has_zh_maybe': False,
+        'type': 'Retailer',
+        'brand': 'span[property=brand]::text',
+        'text_css': {
+            'title': 'h1::text',
+            'desc': None,
+            'details': '.product-details__list li::text',
+        },
+        'photo_urls_css': 'a::attr(data-zoom-image)',
         'screenshot_js': ''';''',
     },
 }

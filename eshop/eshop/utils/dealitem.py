@@ -79,8 +79,17 @@ class ItemMixer(object):
 
     def save_item(self, item):
         # Define variables we need later.
-        brand = item['brand']
-        title = item['title']
+        try:
+            brand = item['brand']
+        except KeyError:
+            print 'Unknown brand item.'
+            brand = u'UNKNOWN'
+        try:
+            title = item['title']
+        except KeyError:
+            print 'Unknown title item.'
+            title = u'No Title'
+
         f_brand = '-'.join(brand.split(' '))
         f_title = '-'.join(title.split(' ')).replace('/', '')
         foldername = '%s_%s' % (f_brand, f_title)

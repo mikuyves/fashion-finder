@@ -78,20 +78,12 @@ class ItemMixer(object):
             self.save_item(item)
 
     def save_item(self, item):
-        # Define variables we need later.
-        try:
-            brand = item['brand']
-        except KeyError:
-            print 'Unknown brand item.'
-            brand = u'UNKNOWN'
-        try:
-            title = item['title']
-        except KeyError:
-            print 'Unknown title item.'
-            title = u'No Title'
+        # Define variables.
+        brand = item['brand']
+        title = item['title']
 
         f_brand = '-'.join(brand.split(' '))
-        f_title = '-'.join(title.split(' ')).replace('/', '')
+        f_title = '-'.join(title.split(' '))
         foldername = '%s_%s' % (f_brand, f_title)
         filename_base = '%s_%s' % (f_brand, f_title)
         flickr_headline = '%s - %s' % (brand, title)
@@ -128,31 +120,39 @@ class ItemMixer(object):
                 f.write(item['url'].encode('utf8'))
 
             # Download photos.
-            print '\nDownloading photos of %s from %s' % (flickr_headline, item['website'])
-            # Some website such as matchesfashion.com should be requested with
-            # User-Agent to download photos.
-            headers =  {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1'}
-            with progressbar.ProgressBar(
-                max_value=len(item['photo_urls']), redirect_stdout=True
-            ) as bar:
-                for num, photo_url in enumerate(item['photo_urls'], start=1):
-                    try:
-                        photo = requests.get(photo_url, headers=headers)
-                    except Exception as e:
-                        print e
-                    finally:
-                        time.sleep(5)
-                        if photo.ok:
-                            filename = '%s_%d.jpg' % (filename_base, num)
-                            filepath = '/'.join([folderpath, filename])
-                            with open(filepath, 'wb') as f:
-                                f.write(photo.content)
-                            bar.update(num)
-                        else:
-                            logger.warning('%s --> MISSED!' % photo_url)
+            photo_urls = item['photo_urls']
+            if photo_urls:
+                print '\nDownloading photos of %s from %s' % (flickr_headline, item['website'])
+                # Some website such as matchesfashion.com should be requested with
+                # User-Agent to download photos.
+                headers =  {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1'}
+                with progressbar.ProgressBar(
+                    max_value=len(photo_urls), redirect_stdout=True
+                ) as bar:
+                    for num, photo_url in enumerate(photo_urls, start=1):
+                        try:
+                            photo = requests.get(photo_url, headers=headers)
+                        except Exception as e:
+                            print e
+                        finally:
+                            time.sleep(5)
+                            if photo.ok:
+                                filename = '%s_%d.jpg' % (filename_base, num)
+                                filepath = '/'.join([folderpath, filename])
+                                with open(filepath, 'wb') as f:
+                                    f.write(photo.content)
+                                bar.update(num)
+                            else:
+                                logger.warning('%s --> MISSED!' % photo_url)
+            else:
+                print 'No photo in this item.'
 
             # Make a file for flickr uploading.
             with open(folderpath + '/ready_to_upload.flk', 'w') as f:
+                f.write(flickr_headline.encode('utf8'))
+
+            # Make a file for Gmail.
+            with open(folderpath + '/ready_to_send.gml', 'w') as f:
                 f.write(flickr_headline.encode('utf8'))
 
             # Backup mixed item data to a JSON file.
